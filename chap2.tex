@@ -1,0 +1,245 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\begin{document}
+
+\setcounter{chapter}{1}
+\chapter{Cauchy's Theorem and Its Applications}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \item Prove that
+  \[ \int_0^\infty \sin(x^2) \dd x = \int_0^\infty \cos(x^2)\dd x = \frac{\sqrt{2\pi}}{4}. \]
+  These are the \textbf{Fresnel integrals}. Here, $\int_0^\infty$ is interpreted as $\lim_{R\to\infty}\int_0^R$.
+  \begin{proof}
+    We consider the function $\me^{-z^2}$, let $\gamma_R$ be the following contour: First a segment from
+    $0$ to $R$, then the circle to $R\me^{\mi \pi/4}$, then a segment back to $0$. Cauchy's theorem tells
+    us that $\int_{\gamma_R} \me^{-z^2}\dd z = 0$, i.e.,
+    \[ \int_0^R \me^{-x^2}\dd x + \int_0^{\pi/4} \me^{-(R\me^{\mi \theta})^2} \dd (R\me^{\mi \theta})
+    - \int_0^R \me^{-\mi x^2} \dd (\me^{\mi \pi/4}x) = 0. \]
+    Therefore, we have
+    \[ \int_0^R (\cos (x^2) - \mi \sin(x^2)) \dd x = \me^{-\mi \pi/4}
+    \left(\int_0^R \me^{-x^2}\dd x+ \int_0^{\pi/4} R\me^{-R^2 \me^{2\mi \theta}} \dd(\me^{\mi\theta}) \right). \]
+    Let the three terms be $A, B, C$. Note that
+    \begin{align*}
+      |C| &= \left|\int_0^{\pi/4} R\me^{-R^2 \me^{2\mi \theta}} \dd(\me^{\mi\theta})\right|\\
+      &\leq \int_0^{\pi/4} \left|R \me^{-R^2 \me^{2\mi \theta}} \right| \dd \theta\\
+      &= \int_0^{\pi/4} R \me^{-R^2 \cos 2\theta} \dd \theta\\
+      &= \frac 12 \int_0^{\pi/2} R \me^{-R^2 \sin \theta} \dd \theta,
+    \end{align*}
+    use the estimation $\sin \theta \geq \frac 2 \pi \theta$, we have
+    \begin{align*}
+      |C| &\leq \frac R2 \int_0^{\pi/2} \me^{-R^2 \frac 2\pi \theta} \dd \theta\\
+      &= \frac{\pi}{4R} (1 - \me^{-R^2}) \to 0.
+    \end{align*}
+    Thus we have
+    \begin{align*}
+      \int_0^\infty (\cos (x^2) - \mi \sin(x^2)) \dd x &= \me^{-\mi \pi/4}
+      \int_0^\infty \me^{-x^2}\dd x\\
+      &= \left(\frac{\sqrt 2} 2 - \mi\frac{\sqrt{2}}2 \right) \frac{\sqrt \pi}2,
+    \end{align*}
+    so we have
+    \[ \int_0^\infty \cos(x^2) \dd x = \int_0^\infty \sin(x^2) \dd x = \frac{\sqrt{2\pi}}{4}. \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{5}
+  \item Let $\Omega$ be an open subset of $\bbC$ and let $T\subset \Omega$ be a triangle whose interior is also
+  contained in $\Omega$. Suppose that $f$ is a function holomorphic in $\Omega$ except possibly at
+  a point $w$ inside $T$. Prove that if $f$ is bounded near $w$, then
+  \[ \int_T f(z) \dd z = 0. \]
+  \begin{proof}
+    Introduce a contour $\gamma_\epsilon$ that connects a circle with radius $\epsilon$ and
+    the triangle $T$. Cauchy's theorem gives
+    \[ \int_T f(z)\dd z - \int_{|z-w| = \epsilon} f(z)\dd z = 0. \]
+    Since $f(z)$ is bounded near $w$, say, $|f|\leq B$, then we have
+    \[ \left| \int_{|z-w|=\epsilon} f(z) \dd z \right| \leq B \cdot 2\pi \epsilon \to 0. \]
+    So we have
+    \[ \int_T f(z) \dd z = 0. \qedhere \]
+  \end{proof}
+  \item Suppose $f\colon \bbD \to \bbC$ is holomorphic. Show that the diameter $d=\sup_{z,w}|f(z)-f(w)|$
+  of the image of $f$ satisfies $2|f'(0)|\leq d$.
+
+  Moreover, it can be shown that equality holds precisely when $f$ is linear, $f(z) =
+  a_0 +a_1z$.
+  \begin{proof}
+    Let $\gamma_R$ be the contour with radius $R<1$ centered at $0$. We know that
+    \[ f'(0) = \frac 1{2\pi \mi}\int_{\gamma_R} \frac{f(z)}{z^2}\dd z. \]
+    Note that $-f'(0)$ is the derivative of $f(-z)$, we have
+    \[ -f'(0) = \frac 1{2\pi \mi}\int_{\gamma_R} \frac{f(-z)}{z^2}\dd z. \]
+    Then minus the two equations, we have
+    \[ 2f'(0) = \frac 1{2\pi \mi}\int_{\gamma_R} \frac{f(z)-f(-z)}{z^2}\dd z. \]
+    Thus
+    \[ 2|f'(0)| \leq \frac 1 R \sup_{z} |f(z) - f(-z)| \leq \frac d R. \]
+    Take $R\to 1$, we have $2|f'(0)|\leq d$.
+  \end{proof}
+  \item If $f$ is a holomorphic function on the strip $-1 < y < 1$, $x \in \bbR$ with
+  \begin{center}
+    $|f(z)|\leq A(1+|z|)^\eta$, \quad $\eta$ a fixed real number
+  \end{center}
+  for all $z$ in that strip, show that for each integer $n \geq 0$ there exists $A_n\geq 0$ so that
+  \begin{center}
+    $|f^{(n)}(x)|\leq A_n(1+|x|)^\eta$, \quad for all $x\in\bbR$.
+  \end{center}
+  \begin{proof}
+    Consider the circle $C_R$ with radius $R<1$ centered at $x$, Cauchy inequalities give us
+    \[ |f^{(n)}(x)| \leq \frac{n!\norm{f}_C}{R^n}. \]
+    When $\eta \geq 0$, we have $\norm{f}_C \leq A(1+|x|+R)^\eta \leq A(2+|x|)^\eta$. Thus
+    \[ |f^{(n)}(x)| \leq \frac{n!A(2+|x|)^\eta}{R^n}. \]
+    Take $R\to 1$, we have
+    \[ |f^{(n)}(x)| \leq n!A(2+|x|)^\eta \leq n! A 2^\eta \left(1 + \frac{|x|}2\right)^\eta. \]
+    Then $A_n= n! A 2^\eta$ is enough.
+    
+    If $\eta < 0$, when $|x|\geq 2$, we have $\norm{f}_C \leq A(1 + |x| - 1)^\eta = A|x|^\eta$,
+    by similar argument, we have
+    \[ |f^{(n)} (x)| \leq n! A |x|^\eta \]
+    when $|x|\geq 2$. Then for $|x|\geq 2$, we have $|f^{(n)}(x)|\leq n! A 2^{-\eta} (1+|x|)^\eta$.
+    For $|x|\leq 2$, since $|f(x)|\leq A$, we have $|f^{(n)}(x)|\leq n! A \leq n! A3^{-\eta}(1+|x|)^\eta$, 
+    so we have $A_n = n! A 3^{-\eta}$ is enough.
+  \end{proof}
+  \item Let $\Omega$ be a bounded open subset of $\bbC$, and $\varphi\colon \Omega\to \Omega$ a holomorphic function.
+  Prove that if there exists a point $z_0\in \Omega$ such that
+  \begin{center}
+    $\varphi(z_0)=z_0$ and $\varphi'(z_0)=1$
+  \end{center}
+  then $\varphi$ is linear.
+  \begin{proof}
+    Suppose $\varphi$ has a higher order derivative at $z_0$, i.e., we have
+    \[ \varphi(z) = z_0+(z-z_0) + a (z-z_0)^n + O((z-z_0)^{n+1}), \]
+    by the rule of differentiation, we know that
+    \[ \varphi^{\circ k}(z) = z_0+(z-z_0) + ka (z-z_0)^n + O((z-z_0)^{n+1}). \]
+    Suppose the ball with radius $R$ centered at $z_0$ lies in $\Omega$, Cauchy inequality gives
+    \[ \left|(\varphi^{\circ k})^{(n)}(z_0)\right| \leq \frac{n! }{R^n} \sup |\varphi^{\circ k}|. \]
+    Since $\varphi(\Omega)\subset \Omega$, we have $\varphi^{\circ k}(\Omega)\subset \Omega$, then
+    we have $|\varphi^{\circ k}| \leq M$, where $M = \sup_{z\in \Omega} |z| < \infty$.
+    So we have
+    \[ |a| \leq \frac{n!M}{R^n} \cdot \frac 1 k. \]
+    Since $k$ can be arbitrarily large, we must have $a=0$, contradiction. So 
+    $\varphi(z)=z$ must hold.
+  \end{proof}
+  \item Weierstrass's theorem states that a continuous function on [0, 1] can be uniformly
+  approximated by polynomials. Can every continuous function on the closed unit disc be approximated uniformly
+  by polynomials in the variable $z$?
+  \begin{answer}
+    No. Suppose a sequence of polynomial $f_n \to f$ uniformly, we must have the convergence
+    \[ \int_\gamma f_n(z)\dd z = \int_\gamma f(z)\dd z \]
+    where $\gamma$ is the unit circle. But for $f_n$ be polynomial, LHS is always zero. Take
+    $f(z)=\Re z$, which is clearly continuous, we have
+    \begin{align*}
+      \int_\gamma f(z)\dd z &= \int_0^{2\pi} \cos \theta \dd(\me^{\mi \theta})\\
+      &= \mi \int_0^{2\pi} \cos \theta \me^{\mi \theta}\dd \theta\\
+      &= \mi \pi.
+    \end{align*}
+    So such $f(z)$ cannot be uniformly approximated by holomorphic functions.
+  \end{answer}
+  \setcounter{enumi}{12}
+  \item Suppose $f$ is an analytic function defined everywhere in $\bbC$ and such that for each
+  $z_0 \in \bbC$ at least one coefficient in the expansion
+  \[ f(z) = \sum_{n=0}^\infty c_n (z-z_0)^n \]
+  is equal to $0$. Prove that $f$ is a polynomial.
+  \begin{proof}
+    For a non-vanishing analytic function over $\bbC$, theorem 4.8 tells us that its roots are discrete,
+    i.e., for each root $z$, there exists a radius $R_z$ such that inside the ball with radius $R_z$,
+    there are no other roots. Then the balls with radius $R_z/2$ and centered at $z$ are pairwise
+    disjoint, since each of them contains a rational point $p + q\mi$, we can conclude that
+    such function must have countable many roots.
+
+    Suppose $f$ is not a polynomial, then for all $n\geq 0$, we have $f^{(n)}$ is non-vanishing,
+    let its roots be $P_n$. If $z_0$ has one coefficient $c_n=0$, we have $z_0\in P_n$.
+    Such $z_0$ is exactly the set
+    \[ P = \bigcup_{n\geq 0} P_n. \]
+    Since each $P_n$ is countable, we have $P$ is countable. But $\bbC$ is uncountable, we must have
+    some $z_0\in \bbC \smallsetminus P$.
+  \end{proof}
+\end{enumerate}
+
+\end{document}
