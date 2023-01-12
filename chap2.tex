@@ -1,4 +1,3 @@
-%!TEX TS-program = xelatex
 %!TEX encoding = UTF-8 Unicode
 \documentclass[11pt]{report}
 \usepackage[margin = 1in]{geometry}
@@ -78,6 +77,7 @@
 
 \setlist[enumerate]{noitemsep, topsep = 0.2em}
 \setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
 \setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
   itemsep = 0em}
 
@@ -240,6 +240,36 @@
     Since each $P_n$ is countable, we have $P$ is countable. But $\bbC$ is uncountable, we must have
     some $z_0\in \bbC \smallsetminus P$.
   \end{proof}
+\end{enumerate}
+
+\section{Problems}
+
+\begin{enumerate}
+  \item Here are some examples of analytic functions on the unit disc that cannot be extended analytically past the unit circle. The following definition is needed. Let
+  $f$ be a function defined in the unit disc $\bbD$, with boundary circle $C$. A point $w$ on $C$ is
+  said to be \emph{regular} for $f$ if there is an open neighborhood $U$ of $w$ and an analytic
+  function $g$ on $U$, so that $f =g$ on $\bbD\cap U$. A function $f$ defined on $D$ cannot be continued
+  analytically past the unit circle if no point of $C$ is regular for $f$.
+  \begin{enumerate}
+    \item Let
+    \begin{center}
+      $\displaystyle f(z) = \sum_{n=0}^\infty z^{2^n}$ \quad for $|z|<1$.
+    \end{center}
+    Notice that the radius of convergence of the above series is $1$. Show that $f$
+    cannot be continued analytically past the unit disc.
+    \begin{proof}
+      For $z=r\me^{\mi\theta}$, where $\theta = 2\pi k/2^m$, and $k, m$ are integers. We have
+      \begin{align*}
+        |f(z)| &\geq  \left| \sum_{n=m}^{\infty} z^{2^n} \right|
+        -\left| \sum_{n=0}^{m-1} z^{2^n} \right|\\
+        &\geq \sum_{n=m}^{\infty} r^{2^n} - m,
+      \end{align*}
+      take $r\to 1$, we have $|f(z)| \to \infty$. So, for each $z = \me^{\mi \theta'}$,
+      we can approximate $\theta'$ by arbitrarily close $\theta$. This gives a sequence
+      $z_n\to z$, $|z_n|<1$ such that $|f(z)|\to \infty$. So $f$ is not regular at
+      any $|z|=1$.
+    \end{proof}
+  \end{enumerate}
 \end{enumerate}
 
 \end{document}

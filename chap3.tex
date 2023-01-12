@@ -1,0 +1,451 @@
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\DeclareMathOperator{\res}{res}
+
+\begin{document}
+
+\setcounter{chapter}{2}
+\chapter{Meromorphic Functions and the Logarithm}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \item Using Euler's formula
+  \[ \sin \pi z = \frac{\me^{\mi \pi z} - \me^{-\mi \pi z}}{2\mi}, \]
+  show that the complex zeros of $\sin\pi z$ are exactly at the integers, and that they are each of order $1$.
+  Calculate the residue of $1/ \sin \pi z$ at $z = n \in \mathbb Z$.
+  \begin{proof}
+    For the zeroes $\sin \pi z = 0$, we have $\me^{2\mi \pi z} = 1$, the solutions are exactly
+    $z=n$. And near the integer $n$ we have
+    \begin{align*}
+      \sin \pi z &= (\me^{2\mi \pi z} - 1)\frac{\me^{-\mi \pi z}}{2\mi}\\
+      &= (\me^{2\mi \pi (z-n)} - 1)\frac{\me^{-\mi \pi z}}{2\mi}\\
+      &= 2\mi \pi (z-n)\frac{\me^{-\mi \pi z}}{2\mi}(1 + O(z-n))\\
+      &= (z-n)\left((-1)^n\pi  + O(z-n)\right).
+    \end{align*}
+    So we have $\res_n (1/\sin \pi z) = (-1)^n / \pi$.
+  \end{proof}
+  \item Evaluate the integral
+  \[ \int_{-\infty}^{\infty} \frac{\dd x}{1+x^4}. \]
+  \begin{answer}
+    Let $\omega = \me^{\mi \pi/4}$, we have
+    \[ \frac 1{z^4+1} =\frac 1{(z-\omega)(z-\omega^3)(z-\omega^5)(z-\omega^7)}. \]
+    Therefore, the function has four poles with order $1$.
+    Consider the semicircle $\gamma_R$ with radius $R$ large enough.
+    The residue formula gives
+    \[ \int_{\gamma_R} \frac{\dd z}{z^4+1} = 2\pi \mi \left(\res_{\omega} \frac 1{z^4+1}
+    + \res_{\omega^3} \frac 1{z^4+1} \right). \]
+    We have
+    \begin{align*}
+      \res_\omega \frac 1{z^4+1} &= \lim_{z\to \omega} \frac{z-\omega}{z^4+1}\\
+      &= \frac1{(\omega-\omega^3)(\omega-\omega^5)(\omega-\omega^7)}\\
+      &= \frac1{4\omega^3}.
+    \end{align*}
+    Similarly, we have
+    \[ \res_{\omega^3} \frac1{z^4+1} = \frac 1{4\omega}. \]
+    Therefore,
+    \begin{align*}
+      &\quad 2\pi \mi \left(\res_{\omega} \frac 1{z^4+1}
+      + \res_{\omega^3} \frac 1{z^4+1} \right)\\
+      &= \frac {\pi}{2} \mi (\omega^{-1} + \omega^{-3})\\
+      &= \frac{\sqrt 2}{2} \pi.
+    \end{align*}
+    For the outer semicircle $C_R^+$, we have
+    \[ \left| \int_{C_R^+} \frac{\dd z}{z^4+1} \right| = O\left( R \cdot \frac 1{R^4} \right) \to 0. \]
+    So we have
+    \[ \int_{-\infty}^{\infty} \frac{\dd x}{x^4+1} = \frac{\sqrt 2}{2} \pi. \]
+  \end{answer}
+  \item Show that
+  \begin{center}
+    $\displaystyle \int_{-\infty}^\infty \frac{\cos x}{x^2+a^2} \dd x = \pi \frac{\me^{-a}}{a}$,
+    \quad for $a>0$.
+  \end{center}
+  \begin{proof}
+    Only need to compute the real part of the integration
+    \[ \int_{-\infty}^\infty \frac{\me^{\mi x}}{x^2+a^2} \dd x. \]
+    Consider the semicircle $\gamma_R$ with radius large enough. Since
+    \[ \frac{\me^{\mi z}}{z^2+a^2} = \frac{\me^{\mi z}}{(z+\mi a)(z-\mi a)} \]
+    has a pole at $\mi a$, residue formula gives
+    \begin{align*}
+      \int_{\gamma_R} \frac{\me^{\mi z}}{z^2+a^2}\dd z &= 2\pi \mi \res_{\mi a} \frac{\me^{\mi z}}{z^2+a^2}\\
+      &= 2\pi \mi \lim_{z\to \mi a} \frac{\me^{\mi z}(z - \mi a)}{z^2+a^2}\\
+      &= \frac{\pi \me^{-a}}{a}.
+    \end{align*}
+    For the outer semicircle $C_R^+$, we have
+    \begin{align*}
+      &\quad \left| \int_{C_R^+} \frac{\me^{\mi z}}{z^2+a^2}\dd z \right|\\
+      & \leq \int_{C_R^+} \frac{|\me^{\mi z}|}{R^2 - a^2} \left|\dd z\right|\\
+      & = \int_{C_R^+} \frac{\me^{-\Im z}}{R^2 - a^2} \left|\dd z\right|\\
+      & = \int_0^\pi \frac{R\me^{-R\sin \theta}}{R^2 - a^2} \dd \theta\\
+      &\leq \frac{2R}{R^2-a^2} \int_0^{\pi/2} \me^{-2R\theta/\pi} \dd \theta\\
+      &\leq \frac{\pi}{R^2-a^2} \to 0.
+    \end{align*}
+    So we have
+    \[ \int_{-\infty}^\infty \frac{\cos x}{x^2+a^2}\dd x = \pi \frac{\me^{-a}}{a}. \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{5}
+  \item Show that
+  \[ \int_{-\infty}^\infty \frac{\dd x}{(1+x^2)^{n+1}} = \frac{1\cdot 3\cdots (2n-1)}
+  {2\cdot 4\cdot 6\cdots (2n)} \cdot \pi. \]
+  \begin{proof}
+    Since
+    \[ \frac 1{(z^2+1)^{n+1}} = \frac 1{(z-\mi)^{n+1}(z+\mi)^{n+1}} \]
+    has pole of order $n+1$ at $\mi$, the semicircle $\gamma_R$ with $R$ large enough has
+    has
+    \begin{align*}
+      \int_{\gamma_R} \frac{\dd z}{(z^2+1)^{n+1}} &= 2\pi \mi \res_{\mi} \frac 1{(z^2+1)^{n+1}}\\
+      &= 2\pi \mi \lim_{z\to \mi} \frac 1{n!} \frac{\dd^n}{\dd z^n} \frac1{(z + \mi)^{n+1}}\\
+      &= 2\pi \mi \lim_{z\to \mi} \frac 1{n!} \frac{(-n-1)(-n-2)\cdots (-2n)}{(z + \mi)^{2n+1}}\\
+      &= 2\pi \mi \frac 1{n!} \frac{(-n-1)(-n-2)\cdots (-2n)}{(2\mi)^{2n+1}}\\
+      &= \frac{(-n-1)(-n-2)\cdots (-2n)}{(-4)^{n} n!} \cdot \pi\\
+      &= \frac{(2n)!}{n!^2 4^n} \cdot \pi\\
+      &= \frac{1\cdot 3\cdots (2n-1)}
+      {2\cdot 4\cdot 6\cdots (2n)} \cdot \pi. \qedhere
+    \end{align*}
+  \end{proof}
+  \setcounter{enumi}{7}
+  \item Prove that
+  \[ \int_0^{2\pi} \frac{\dd \theta}{a + b\cos \theta} = \frac{2\pi}{\sqrt{a^2-b^2}} \]
+  if $a>|b|$ and $a,b\in\bbR$.
+  \begin{proof}
+    We first analyze the poles of $1/(a + b\cos z)$. Since
+    \[ \cos z = \frac{\me^{\mi z} + \me^{-\mi z}}2, \]
+    the poles are at $a + b\cos z = 0$, i.e.,
+    \[ \me^{\mi z} = \frac{-a \pm \sqrt{a^2-b^2}}{b}. \]
+    Thus
+    \begin{align*}
+      \mi z &= 2\pi n \mi + \ln\left( \frac{-a \pm \sqrt{a^2-b^2}}{b} \right)\\
+      &= (2n + 1)\pi \mi \pm \ln\left( \frac{a-\sqrt{a^2-b^2}}{b} \right),\\
+      z &= (2n+1)\pi \pm \mi \ln\left( \frac{a-\sqrt{a^2-b^2}}{b} \right).
+    \end{align*}
+    Let
+    \[ z_0 = \pi - \mi \ln\left( \frac{a-\sqrt{a^2-b^2}}{b} \right), \]
+    at $z_0$ we have
+    \begin{align*}
+      a + b\cos z &= a + b\cos((z - z_0) + z_0)\\
+      &= a + b(\cos z_0 - \sin z_0 \cdot (z-z_0) + O((z-z_0)^2))\\
+      &= (z-z_0) (-b\sin z_0 + O(z-z_0)).
+    \end{align*}
+    Since
+    \begin{align*}
+      \sin z_0 &= \frac{\me^{\mi z_0} - \me^{-\mi z_0}}{2\mi}\\
+      &= \frac 1{2\mi} \left(\frac{b}{a-\sqrt{a^2-b^2}} -\frac{a-\sqrt{a^2-b^2}}{b} \right)\\
+      &= \frac 1 {\mi} \frac{\sqrt{a^2-b^2}}{b},
+    \end{align*}
+    we have $a + b\cos z = (z-z_0)\left(\mi \sqrt{a^2-b^2} + O(z-z_0)\right)$.
+
+    Now consider a rectangular contour $\gamma_R$ from $0$ to $2\pi$, to $2\pi+R\mi$, to $R\mi$ and then back to $0$.
+    There is only one pole inside the region, residue formula gives
+    \begin{align*}
+      \int_{\gamma_R} \frac{\dd z}{a + b\cos z} & = 2\pi \mi \res_{z_0} \frac 1{a + b\cos z}\\
+      &= \frac{2\pi}{\sqrt{a^2-b^2}}.
+    \end{align*}
+    Note that the two vertical lines cancel each other, we have
+    \begin{align*}
+      \int_0^{2\pi} \frac{\dd \theta}{a + b\cos \theta} &= \frac{2\pi}{\sqrt{a^2-b^2}}
+      + \int_0^{2\pi} \frac{\dd \theta}{a + b \cos(\theta + \mi R)},
+    \end{align*}
+    since
+    \begin{align*}
+      \left|\cos (\theta + \mi R)\right| &= \left| \frac{\me^{\mi(\theta + \mi R)}+\me^{-\mi(\theta + \mi R)}}{2} \right|\\
+      &\geq \frac 12 (\me^{R} - \me^{-R}),
+    \end{align*}
+    we have
+    \begin{align*}
+      &\quad \left|\int_0^{2\pi} \frac{\dd \theta}{a + b \cos(\theta + \mi R)}\right|\\
+      &\leq \int_0^{2\pi} \frac{\dd \theta}{(b/2)(\me^{R}-\me^{-R}) - a}\\
+      &= \frac{2\pi}{(b/2)(\me^{R}-\me^{-R}) - a} \to 0.
+    \end{align*}
+    So we have
+    \[ \int_0^{2\pi} \frac{\dd \theta}{a + b\cos \theta} = \frac{2\pi}{\sqrt{a^2-b^2}}. \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{9}
+  \item Show that if $a > 0$, then
+  \[ \int_0^\infty \frac{\log x}{x^2+a^2}\dd x = \frac{\pi}{2a}\log a. \]
+  \begin{proof}
+    We can define $\log z$ on $\bbC \smallsetminus \{ \mi y \mid y \leq 0 \}$.
+    Consider the integration along the intended semicircle for $\epsilon$ small enough
+    and $R$ large enough, the residue formula gives
+    \begin{align*}
+      &\quad \int_\epsilon^R \frac{(2\log x + \mi \pi)}{x^2+a^2} \dd x
+      + \int_{\gamma_R^+} \frac{\log z}{z^2+a^2}\dd z
+      + \int_{\gamma_\epsilon^+} \frac{\log z}{z^2+a^2}\dd z\\
+      &= 2\pi \mi \res_{\mi a} \frac{\log z}{z^2+a^2}\\
+      &= 2\pi \mi \lim_{z\to \mi a} \frac{(z-\mi a)\log z}{z^2+a^2}\\
+      &= 2\pi \mi \frac{\log \mi a}{2\mi a}\\
+      &= \frac{\pi}{a} \left(\log a + \frac{\pi}{2}\mi\right).
+    \end{align*}
+    Then we compute the integration on the two semicircles.
+    For $\gamma_R^+$ we have
+    \begin{align*}
+      &\quad \left|\int_{\gamma_R^+} \frac{\log z}{z^2+a^2}\dd z\right|\\
+      &= \left|\int_0^\pi \frac{\log (R\me^{\mi \theta})}{R^2\me^{2\mi \theta}+a^2}\dd (R\me^{\mi \theta})\right|\\
+      &\leq \int_0^\pi \frac{\left|\log R + \mi \theta\right|}{R^2-a^2} \cdot R \dd \theta\\
+      &\leq \frac{\pi R(\log R + \pi)}{R^2-a^2}\to 0.
+    \end{align*}
+    For $\gamma_\epsilon^+$ we have
+    \begin{align*}
+      &\quad \left|\int_{\gamma_\epsilon^+} \frac{\log z}{z^2+a^2}\dd z\right|\\
+      &= \left|\int_0^\pi \frac{\log (\epsilon\me^{\mi \theta})}{\epsilon^2\me^{2\mi \theta}+a^2}\dd (\epsilon\me^{\mi \theta})\right|\\
+      &\leq \int_0^\pi \left|\frac{\epsilon \mi (\log \epsilon + \mi \theta)}{\epsilon^2\me^{2\mi \theta}+a^2}\right| \dd \theta\\
+      &\leq \frac{\pi\epsilon (\log \epsilon + \pi)}{a^2-\epsilon^2}\to 0.
+    \end{align*}
+    So we have
+    \[ \int_0^\infty \frac{(2\log x + \mi \pi)}{x^2+a^2} \dd x = \frac{\pi}{a} \left(\log a + \frac{\pi}{2}\mi\right). \]
+    Take the real part, we have 
+    \[ \int_0^\infty \frac{\log x}{x^2+a^2} \dd x = \frac{\pi \log a}{2a}. \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{11}
+  \item Suppose $u$ is not an integer. Prove that
+  \[ \sum_{n=-\infty}^\infty \frac 1{(u+n)^2} = \frac{\pi^2}{(\sin \pi u)^2} \]
+  by integrating
+  \[ f(z) = \frac{\pi \cot \pi z}{(u+z)^2} \]
+  over the circle $|z| = R_N = N + 1/2$ ($N$ integral, $N \geq |u|$), adding the
+  residues of $f$ inside the circle, and letting $N$ tend to infinity.
+  \begin{proof}
+    We first analyze the poles of $\pi \cot \pi z / (u+z)^2$, at $z=n$,
+    we have
+    \begin{align*}
+      &\quad \res_n \frac{\pi \cot \pi z}{(u+z)^2}\\
+      &= \frac{\pi \cot \pi n}{(u+n)^2} \res_n \frac 1{\sin \pi z}\\
+      &= \frac{\pi (-1)^n}{(u+n)^2} \cdot (-1)^n \frac 1 \pi\\
+      &= \frac 1{(u+n)^2}.
+    \end{align*}
+    At $z=-u$, we have
+    \begin{align*}
+      &\quad \res_{-u} \frac{\pi \cot \pi z}{(u+z)^2}\\
+      &= \lim_{z\to -u} \frac{\dd}{\dd z} \pi \cot \pi z\\
+      &= \lim_{z\to -u} -\frac{\pi^2} {\sin^2 \pi z}\\
+      &= -\frac{\pi^2} {\sin^2 \pi u}.
+    \end{align*}
+    Then integrate along the circle $C_{R_N}$, the residue formula gives
+    \[ \int_{C_{R_N}} f(z)\dd z = 2\pi \mi \left(\sum_{n=-N}^N \frac{1}{(u+n)^2} - \frac{\pi^2}{\sin^2\pi u}\right). \]
+    Note that
+    \begin{align*}
+      \left|\frac{\pi \cot \pi z}{(u+z)^2}\right| &= \frac{\pi}{|u+z|^2} \left|
+        \frac{\me^{\mi \pi z}+\me^{-\mi \pi z}}{\me^{\mi \pi z}-\me^{-\mi \pi z}} \right|\\
+        &= \frac{\pi}{|u+z|^2} \left|
+          1+\frac{2}{\me^{2\mi \pi z}-1} \right|,
+    \end{align*}
+    note that $|\me^{2\mi \pi z} - 1| < \epsilon$ corresponds to a small neighborhood
+    around each $z=n$, 
+    so $\left|\frac{\pi \cot \pi z}{(u+z)^2}\right| \leq B$ for some constant $B$ when $N$ large enough.
+    The integration converges to $0$. We have
+    \[ \sum_{n=-N}^N \frac{1}{(u+n)^2} - \frac{\pi^2}{\sin^2\pi u} \to 0. \]
+    That is,
+    \[ \sum_{n=-\infty}^\infty \frac{1}{(u+n)^2} = \frac{\pi^2}{\sin^2\pi u}. \qedhere \]
+  \end{proof}
+  \item Suppose $f(z)$ is holomorphic in a punctured disc $D_r(z_0) - \{z_0\}$. Suppose also that
+  \[ |f(z_0)| \leq A |z-z_0|^{-1+\varepsilon} \]
+  for some $\varepsilon>0$, and all $z$ near $z_0$. Show that the singularity of $f$ at $z_0$ is removable.
+  \begin{proof}
+    The proof is basically repeating Riemann's theorem. We first choose a circle $C$
+    inside the disc and containing $z_0$, if
+    \[ f(z) = \frac 1{2\pi \mi} \int_C \frac{f(\zeta)}{\zeta-z}\dd \zeta \]
+    holds for all $z \neq z_0$ inside $C$, then we can extend to $z_0$ by continuity.
+    Let $\gamma_\epsilon$ be connecting the circle and two clockwise $\epsilon$-circle around $z$ and $z_0$
+    respectively, we have
+    \[ \int_\gamma \frac{f(\zeta)}{\zeta-z}\dd \zeta = 0, \]
+    so we have
+    \begin{align*}
+      \frac 1{2\pi \mi} \int_C \frac{f(\zeta)}{\zeta-z}\dd \zeta &=
+      \frac 1{2\pi \mi} \left( \int_{C_\epsilon(z_0)} \frac{f(\zeta)}{\zeta-z}\dd \zeta
+      +\int_{C_\epsilon(z)} \frac{f(\zeta)}{\zeta-z}\dd \zeta \right) \\
+      &= f(z) + \frac 1{2\pi \mi}\int_{C_\epsilon(z_0)} \frac{f(\zeta)}{\zeta-z}\dd \zeta.
+    \end{align*}
+    Note that when $\epsilon$ small enough, we have
+    \[ \left|\frac{f(\zeta)}{\zeta-z}\dd \zeta\right| \leq \frac{A|\zeta - z_0|^{-1+\varepsilon}}{|z-z_0|-\epsilon}, \]
+    we have
+    \begin{align*}
+      &\quad \left|\frac 1{2\pi \mi}\int_{C_\epsilon(z_0)} \frac{f(\zeta)}{\zeta-z}\dd \zeta\right|\\
+      &\leq \frac{A \epsilon^{\varepsilon}}{|z-z_0|- \epsilon} \to 0.
+    \end{align*}
+    So we have the equality holds.
+  \end{proof}
+  \item Prove that all entire functions that are also injective take the form
+  $f(z)=az+b$ with $a, b \in \bbC$, and $a\neq 0$.
+  \begin{proof}
+    If $f$ is meromorphic over the extened complex plane, then $f$ is a rational function.
+    Since $f$ is entire, it must be a polynomial. Since $f$ is injective, it must have the
+    form $az+b$ where $a\neq 0$.
+
+    Otherwise, $f(1/z)$ has an essential singularity at $z=0$. Casorati--Weierstrass theorem
+    tells that the image of $f(1/z)$ is dense around $z=0$, say, $D_{1/2}(0) \smallsetminus\{0\}$.
+    The open mapping theorem tells that the image of $D_{1/2}(1)$ should be open,
+    so their image has some intersecion $f(1/z_1) = f(1/z_2)$ where $|z_1|, |z_2-1| < 1/2$.
+    $f$ cannot be injective.
+  \end{proof}
+  \setcounter{enumi}{15}
+  \item Suppose $f$ and $g$ are holomorphic in a region containing the disc $|z| \leq 1$. Suppose that
+  $f$ has a simple zero at $z = 0$ and vanishes nowhere else in $|z| \leq 1$. Let
+  \[ f_\epsilon(z) = f(z) + \epsilon g(z). \]
+  Show that if $\epsilon$ is sufficiently small, then
+  \begin{enumerate}
+    \item $f_\epsilon(z)$ has a unique zero in $|z| \leq 1$, and
+    \begin{proof}
+      When
+      \[ \epsilon < \inf_{|z|=1} \frac{|f(z)|}{|g(z)|}, \]
+      Rouch\'e's theorem applies.
+    \end{proof}
+    \item if $z_\epsilon$ is this zero, the mapping $\epsilon\to z_\epsilon$ is continuous.
+    \begin{proof}
+      We first show that if $f$ has exactly one zero $|z_0|<1$ inside the unit circle $\gamma$ and vanishes
+      nowhere else in $|z|\leq 1$, then we have
+      \[ z_0 = \frac 1{2\pi \mi} \int_\gamma \frac{z f'(z)}{f(z)} \dd z. \]
+      Since $z_0$ is the only zero, we have $f(z) = g(z)(z-z_0)$ where $g(z)$ is nonzero and
+      holomorphic in $|z|\leq 1$, we have
+      \begin{align*}
+        \frac{zf'(z)}{f(z)} &= z\left( \frac{1}{z-z_0} + \frac{g'(z)}{g(z)} \right)\\
+        &= 1 + \frac{z_0}{z-z_0} + \frac{zg'(z)}{g(z)}.
+      \end{align*}
+      Since $1 + zg'(z)/g(z)$ is holomorphic, we have
+      \begin{align*}
+        &\quad \frac 1{2\pi \mi} \int_\gamma \frac{zf'(z)}{f(z)}\dd z\\
+        &= \frac 1{2\pi \mi} \frac{z_0}{z-z_0}\dd z\\
+        &= z_0.
+      \end{align*}
+      Therefore, we have
+      \[ z_\epsilon = \frac 1{2\pi \mi} \int_\gamma \frac{z(f'(z)+\epsilon g'(z))}{f(z)+\epsilon g(z)} \dd z, \]
+      which is clearly continuous respect to $\epsilon$.
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{19}
+  \item This exercise shows how the mean square convergence dominates the uniform convergence of analytic
+  functions. If $U$ is an open subset of $\bbC$ we use the notation
+  \[ \norm{f}_{L^2(U)} = \left(\int_U |f(z)|^2 \dd x\dd y\right)^{1/2} \]
+  for the mean square norm, and
+  \[ \norm{f}_{L^\infty(U)} = \sup_{z\in U} |f(z)| \]
+  for the sup norm.
+  \begin{enumerate}
+    \item If $f$ is holomorphic in a neighborhood of the disc $D_r(z_0)$, show that for any $0<s<r$
+    there exists a constant $C>0$ (which depends on $s$ and $r$) such that
+    \[ \norm{f}_{L^\infty(D_s(z_0))} \leq C \norm{f}_{L^2(D_r(z_0))}. \]
+    \begin{proof}
+      By the maximum modulus principle, the sup is taken on some $|z_s|=s$. For $\rho < r-s$, by the mean-value
+      property, we have
+      \begin{align*}
+        |f(z_s)| &= \left|\frac 1{2\pi} \int_0^{2\pi} f(z_s + \rho \me^{\mi \theta})\dd \theta \right|\\
+        &\leq \frac 1{2\pi} \int_0^{2\pi} |f(z_s+\rho \me^{\mi \theta})| \dd \theta.
+      \end{align*}
+      Therefore, we have
+      \begin{align*}
+        &\quad \int_{|z-z_s|< r-s} |f(z)| \dd x\dd y\\
+        &= \int_{0}^{r-s} \rho \left(\int_0^{2\pi}|f(z_s+\rho^{\mi \theta})| \dd \theta\right)\dd \rho\\
+        &\geq \int_{0}^{r-s} \rho \cdot 2\pi |f(z_s)|\dd \rho\\
+        &= \pi (r-s)^2 |f(z_s)|.
+      \end{align*}
+      At last, by Cauchy--Schwarz inequality, we have
+      \begin{align*}
+        &\quad \int_{|z-z_s|< r-s} |f(z)| \dd x\dd y\\
+        &\leq \left(\int_{|z-z_s|< r-s} 1 \dd x\dd y\right)^{1/2}\left(\int_{|z-z_s|< r-s} |f(z)|^2 \dd x\dd y\right)^{1/2}\\
+        &\leq \sqrt{\pi} (r-s) \norm{f}_{L^2(D_r(z_0))},
+      \end{align*}
+      so we have
+      \[ \norm{f}_{L^\infty(D_s(z_0))}\leq \frac{1}{\sqrt{\pi}(r-s)} \norm{f}_{L^2(D_r(z_0))}.\qedhere \]
+    \end{proof}
+    \item Prove that if $\{f_n\}$ is a Cauchy sequence of holomorphic functions in the mean square
+    norm $\norm{\cdot}_{L^2(U)}$, then the sequence $\{f_n\}$ converges uniformly on every compact
+    subset of $U$ to a holomorphic function.
+    \begin{proof}
+      By compactness, we can find finite discs $D_{r}(z) \subset U$ such that
+      $D_{r/2}(z)$ covers the subset, say, $C$. Therefore, the $L^2$ convergence gives $L^\infty$
+      convergence, then $f_n$ has a uniform limit over $C$. Therefore, theorem 5.2 applies.
+    \end{proof}
+  \end{enumerate}
+\end{enumerate}
+
+\end{document}
