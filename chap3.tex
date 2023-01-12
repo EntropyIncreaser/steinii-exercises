@@ -96,6 +96,8 @@
 
 \DeclareMathOperator{\res}{res}
 
+\allowdisplaybreaks
+
 \begin{document}
 
 \setcounter{chapter}{2}
@@ -444,6 +446,169 @@
       By compactness, we can find finite discs $D_{r}(z) \subset U$ such that
       $D_{r/2}(z)$ covers the subset, say, $C$. Therefore, the $L^2$ convergence gives $L^\infty$
       convergence, then $f_n$ has a uniform limit over $C$. Therefore, theorem 5.2 applies.
+    \end{proof}
+  \end{enumerate}
+\end{enumerate}
+
+\section{Problems}
+
+\begin{enumerate}
+  \item Consider a holomorphic map on the unit disc $f \colon \bbD \to \bbC$ which satisfies $f(0) = 0$.
+  By the open mapping theorem, the image $f(\bbD)$ contains a small disc centered at the origin.
+  We then ask: does there exist $r > 0$ such that for all $f \colon \bbD \to \bbC$ with
+  $f(0) = 0$, we have $D_r(0) \subset f(\bbD)$?
+  \begin{enumerate}
+    \item Show that with no further restrictions on $f$, no such $r$ exists. It suffices to find a
+    sequence of functions $\{f_n\}$ holomorphic in $\bbD$ such that $1/n \notin f(\bbD)$. Compute
+    $f_n'(0)$, and discuss.
+    \begin{proof}
+      Let $f_n(z) = z/n$, since $|f_n(z)| < 1/n$, we have $1/n\notin f(\bbD)$.
+      In our construction, $f'_n(0)=1/n \to 0$.
+    \end{proof}
+    \item Assume in addition that $f$ also satisfies $f'(0) = 1$. Show that despite this new assumption,
+    there exists no $r > 0$ satisfying the desired condition.
+    \begin{proof}
+      Let $f_\epsilon(z) = \epsilon(\me^{z/\epsilon}-1)$, the solution of $f_\epsilon(z)=-1/n$
+      is
+      \[ z = \epsilon \left( 2\pi m \mi + \log \left(1 - \frac 1{n\epsilon}\right) \right), \quad m\in\mathbb Z. \]
+      The solution with smallest modulus is $m=0$, we have
+      \[ z = \epsilon \log \left(1 - \frac 1{n\epsilon}\right), \]
+      we have $|z|\to \infty$ as $\epsilon\to 0$. So we have $-1/n\notin f_\epsilon(\bbD)$ for $\epsilon$
+      small enough.
+    \end{proof}
+    The Koebe--Bieberbach theorem states that if in addition to $f(0) = 0$ and $f'(0) = 1$ we also
+    assume that $f$ is injective, then such an $r$ exists and the best possible value is $r = 1/4$.
+    \item As a first step, show that if $h(z) = \frac 1 z + c_0 + c_1 z + c_2z^2 + \cdots$ is analytic and
+    injective for $0 < |z| < 1$, then $\sum_{n=1}^\infty n |c_n|^2 \leq 1$. \label{area}
+    \begin{proof}
+      Fix $\rho\in (0, 1)$, consider the image of $D_\rho(0)$ through $1/h(z)$. Note that changing $c_0$ has no effect,
+      we assume $h(z)$ has no zero at $|z| \leq \rho$. Therefore, $1/h(z)$ is holomorphic
+      on an open set containing $\overline{D_\rho(0)}$, the image should be compact and simply connected,
+      and it contains $0$. Therefore, the complement of $h(D_\rho(0))$ should be compact and simply connected.
+      We can compute its area by Green's theorem, let $f(\theta) = h(\rho \me^{\mi \theta})$, we have
+      \begin{align*}
+        |A| &= \frac 12\left| \int_0^{2\pi} (\Re f(\theta) \Im f'(\theta)
+        - \Im f(\theta) \Re f'(\theta)) \dd \theta \right|\\
+        &= \frac 12 \left| \int_0^{2\pi} (\Re h(\rho \me^{\mi\theta}) \Im \mi \me^{\mi \theta} h'(\rho \me^{\mi\theta})
+        - \Im h(\rho \me^{\mi\theta}) \Re \mi \me^{\mi \theta} h'(\rho \me^{\mi\theta})) \rho\dd \theta \right|\\
+        &= \frac 12\left| \int_0^{2\pi} (\Re h(\rho \me^{\mi\theta}) \Re \me^{\mi \theta} h'(\rho \me^{\mi\theta})
+        + \Im h(\rho \me^{\mi\theta}) \Im \me^{\mi \theta} h'(\rho \me^{\mi\theta})) \rho\dd \theta \right|\\
+        &= \frac 12\left| \Re \int_0^{2\pi} h(\rho\me^{\mi \theta}) \overline{\rho \me^{\mi \theta} h'(\rho\me^{\mi\theta})}\dd \theta \right|,
+      \end{align*}
+      since $\rho<1$, the series is absolute converging, we have
+      \begin{align*}
+        &= \frac 12 \left| \Re \int_0^{2\pi} \sum_{n, m\geq -1}
+        c_n \rho^n \me^{n\mi \theta}\cdot m\overline{c_m} \rho^{m} \me^{-m\mi \theta} \dd \theta \right|\\
+        &= \frac 12 \left| \Re \sum_{n, m\geq -1}
+        c_n \rho^n \cdot m\overline{c_m} \rho^{m}\int_0^{2\pi}  \me^{(n-m)\mi \theta}  \dd \theta \right|\\
+        &= \frac 12 \left| \Re \sum_{n\geq -1}
+        c_n \rho^n \cdot n\overline{c_{n}} \rho^{n} \cdot 2\pi \right|\\
+        &= \pi \left| \rho^{-2} - \sum_{n=1}^\infty n |c_n|^2 \rho^{2n} \right|\\
+        &= \pi \left(\rho^{-2} - \sum_{n=1}^\infty n |c_n|^2 \rho^{2n}\right).
+      \end{align*}
+      Since $|A|\geq 0$, we must have
+      \[ \sum_{n=1}^\infty n |c_n|^2 \rho^{2n} \leq \rho^{-2}. \]
+      Take $\rho\to 1$, we have
+      \[ \sum_{n=1}^\infty n |c_n|^2 \leq 1. \]
+    \end{proof}
+    \item If $f(z)=z + a_2 z^2 + \cdots$ satisfies the hypotheses of the theorem, show
+    that there exists another function $g$ satisfying the hypotheses of the theorem such
+    that $g^2(z) = f(z^2)$.
+    \begin{proof}
+      By the hypotheses, $0$ is the only zero of $f(z)$. Thus $f(z)/z$ is nowhere vanishing.
+      Since the disc is simply connected, we can have holomorphic function $h$ such that
+      $h(0)=0$, and $f(z)/z=\me^{h(z)}$. Then we take $\psi(z) = \me^{h(z)/2}$, we have
+      $\psi(z)^2 = f(z)/z$. Then let $g(z) = z\psi (z^2)$, we have $g(z)^2 = f(z^2)$.
+
+      Clearly we have $g(0) = f(0)=0$ and $g'(0) = \psi(0) = 1$. We prove that $g$ is injective.
+      For $z_1 \neq z_2$, if $z_1^2 \neq z_2^2$, we have $f(z_1^2)\neq f(z_2^2)$, thus $g(z_1)\neq g(z_2)$.
+      Otherwise, we only need to prove $g(z)\neq g(-z)$ for $z\neq 0$, this follows from
+      $g(z) = z \psi(z^2)$, since $\psi$ is nonvanishing, we have $g(z)=-g(-z)\neq 0$.
+    \end{proof}
+    \item With the notation of the previous
+    part, show that $|a_2|\leq 2$, and that equality holds if and only if
+    \begin{center}
+      $\displaystyle f(z) = \frac{z}{(1-\me^{\mi \theta}z)^2}$\quad for some $\theta\in\bbR$.
+    \end{center}
+    \begin{proof}
+      Not hard to see that $g(z) = z + \frac{a_2}{2}z^3 + O(z^4)$, then
+      \[ h(z) = \frac 1{g(z)} = z^{-1} - \frac{a_2}{2}z + O(z^2) \]
+      is analytic and injective for $0<|z|<1$. Then \ref{area} applies, we have $|a_2|\leq 2$.
+      When the equality holds, we must have $h(z) = z^{-1} - \me^{\mi \theta} z$, thus
+      $g(z) = z / (1 - \me^{\mi \theta}z^2)$, $f(z) = z/(1-\me^{\mi\theta} z)^2$.
+      To show such $f$ is injective, we only need to show for $\theta=0$.
+      Suppose $f(z)=y$, when $y=0$ the only solution is clearly $0$, otherwise we have
+      \[ z^2 - \left(2 + \frac 1 y\right)z + 1 = 0. \]
+      So the two solutions satisfy $z_1z_2 = 1$, there is at most one solution lying in $D_1(0)$.
+    \end{proof}
+    \item If $h(z)= \frac1z +c_0 +c_1z+c_2z^2 +\cdots$ is injective on $\bbD$ and avoids the values
+    $z_1$ and $z_2$, show that $|z_1-z_2|\leq 4$. \label{havoid}
+    \begin{proof}
+      Consider $f(z) = 1/(h(z) - z_j)$, we have
+      \begin{align*}
+        f(z) &= \frac{1}{1/z + (c_0 -z_j) + O(z)}\\
+        &= z + (z_j - c_0)z^2 + O(z^3),
+      \end{align*}
+      since $h(z)-z_j$ never vanishes, we have $h(z)$ is holomorphic and injective on $\bbD$,
+      thus $|z_j - c_0|\leq 2$. Thus $|z_1-z_2|\leq 4$.
+    \end{proof}
+    \item Complete the proof of the theorem.
+    \begin{proof}
+      If $f(z) = z + O(z^2)$ is injective and holomorphic over $\bbD$,
+      suppose $f$ avoids $w$, then $h(z)=1/f(z)$ has the form in \ref{havoid}
+      and avoids $0$ and $1/w$, so we have $|1/w|\leq 4$, thus $|w|\geq 4$.
+      We can see that $D_{1/4}(0)$ always lies in the image of $f$.
+
+      To achieve $1/4$, consider $f(z) = z/(1-z)^2$ and $f(z) = -1/4$, the only solution is $z=-1$.
+    \end{proof}
+    \setcounter{enumi}{2}
+    \item If $f(z)$ is holomorphic in the deleted neighborhood $\{0 < |z - z_0| < r\}$ and has
+    a pole of order $k$ at $z_0$, then we can write
+    \[ f(z) = \frac{a_{-k}}{(z-z_0)^k} + \cdots + \frac{a_{-1}}{z-z_0} + g(z) \]
+    where $g$ is holomorphic in the disc $\{|z - z_0| < r\}$. There is a generalization of this
+    expansion that holds even if $z_0$ is an essential singularity. This is a special case of
+    the \textbf{Laurent series expansion}, which is valid in an even more general setting.
+
+    Let $f$ be holomorphic in a region containing the annulus $\{z : r_1 \leq |z - z_0| \leq r_2\}$
+    where $0 < r_1 < r_2$. Then,
+    \[ f(z) = \sum_{n=-\infty}^{\infty} a_n (z-z_0)^n \]
+    where the series converges absolutely in the interior of the annulus. To prove this,
+    it suffices to write
+    \[ f(z) = \frac 1{2\pi \mi} \int_{C_{r_2}} \frac{f(\zeta)}{\zeta-z}\dd \zeta
+    - \frac 1{2\pi \mi}\int_{C_{r_1}} \frac{f(\zeta)}{\zeta-z}\dd \zeta \]
+    when $r_1 < |z - z_0| < r_2$, and argue as in the proof of Theorem 4.4, Chapter 2.
+    Here $C_{r_1}$ and $C_{r_2}$ are the circles bounding the annulus.
+    \begin{proof}
+      The above formula is true because we can add a line connecting the two circles,
+      and $z$ is contained in the interior.
+
+      Then for the $r_2$ part, we use the convergence
+      \[ \frac 1{\zeta - z} = \frac 1{\zeta - z_0 - (z - z_0)} = \frac 1{\zeta - z_0}\frac 1{1 - \frac{z-z_0}{\zeta-z_0}}, \]
+      we have
+      \begin{align*}
+        &\quad \frac 1{2\pi \mi} \int_{C_{r_2}} \frac{f(\zeta)}{\zeta-z}\dd \zeta\\
+        &= \frac 1{2\pi \mi} \int_{C_{r_2}} \sum_{n=0}^\infty \frac {f(\zeta)(z-z_0)^{n}}{(\zeta - z_0)^{n+1}} \dd \zeta\\
+        &= \sum_{n=0}^\infty \left(\frac 1{2\pi \mi} \int_{C_{r_2}} \frac {f(\zeta)}{(\zeta - z_0)^{n+1}} \dd \zeta\right) (z-z_0)^{n},
+      \end{align*}
+      and for the $r_1$ part, we use the convergence
+      \[ \frac 1{\zeta - z} = \frac 1{z-z_0} \frac 1{\frac{\zeta - z_0}{z-z_0} - 1}, \]
+      we have
+      \begin{align*}
+        &\quad \frac 1{2\pi \mi}\int_{C_{r_1}} \frac{f(\zeta)}{\zeta-z}\dd \zeta\\
+        &= -\frac 1{2\pi \mi}\int_{C_{r_1}} \sum_{n=0}^\infty \frac{f(\zeta) (\zeta-z_0)^n}{(z-z_0)^{n+1}} \dd \zeta\\
+        &= -\sum_{n=0}^\infty \left( \frac 1{2\pi \mi}\int_{C_{r_1}}f(\zeta) (\zeta-z_0)^n \dd \zeta\right) \frac{1}{(z-z_0)^{n+1}}\\
+        &= -\sum_{n\leq -1} \left( \frac 1{2\pi \mi}\int_{C_{r_1}} \frac{f(\zeta)}{(\zeta-z_0)^{n+1}} \dd \zeta\right) (z-z_0)^{n}.
+      \end{align*}
+      In conclusion, the sequence $a_n$ satisfies
+      \begin{center}
+        $\displaystyle a_n = \frac 1{2\pi \mi}\int_{C_{r_2}} \frac{f(\zeta)}{(\zeta-z_0)^{n+1}} \dd \zeta$
+        \quad for $n\geq 0$,
+      \end{center}
+      and
+      \begin{center}
+        $\displaystyle \frac 1{2\pi \mi}\int_{C_{r_1}} \frac{f(\zeta)}{(\zeta-z_0)^{n+1}} \dd \zeta$\quad for $n\leq -1$.
+      \end{center}
+      The convergence is not hard to see.
     \end{proof}
   \end{enumerate}
 \end{enumerate}
