@@ -1,0 +1,391 @@
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\DeclareMathOperator{\res}{res}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\setcounter{chapter}{4}
+\chapter{Entire Functions}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \setcounter{enumi}{1}
+  \item Find the order of growth of the following entire functions:
+  \begin{enumerate}
+    \item $p(z)$ where $p$ is a polynomial. 
+    \begin{answer}
+      For any $\rho > 0$, clearly we have $|p(z)| \leq \me^{|z|^\rho}$ for $|z|$ large enough.
+      So polynomials have order $0$.
+    \end{answer}
+    \item $\me^{bz^n}$ for $b\neq 0$.
+    \begin{answer}
+      We have $|\me^{bz^n}| = \me^{\Re bz^n} \leq \me^{|bz^n|}$ and such $z$ can be achieved when fixing any $|z|$.
+      It must have order $n$. For any $\rho > n$, we have $|bz^n| < |z|^\rho$ for $|z|$ large enough.
+      For any $\rho < n$, we have $A\me^{|z|^\rho} < \me^{|bz^n|}$ when $|z|$ large enough.
+    \end{answer}
+    \item $\me^{\me^z}$.
+    \begin{answer}
+      For any finite $\rho$, we have $\me^x > A x^\rho$ for $x$ large enough. So the order is infinite.
+    \end{answer}
+  \end{enumerate}
+  \item Show that if $\tau$ is fixed with $\Im(\tau ) > 0$, then the Jacobi theta function
+  \[ \Theta(z|\tau) = \sum_{n=-\infty}^{\infty} \me^{\pi \mi n^2 \tau} \me^{2\pi \mi n z} \]
+  is of order $2$ as a function of $z$. 
+  \begin{proof}
+    Firstly, we have
+    \begin{align*}
+      |\Theta(z|\tau)| &\leq \sum_{n=-\infty}^{\infty} \me^{-\pi n^2 \Im \tau}\me^{2\pi n |z|} \\
+      &= \sum_{n=-\infty}^{\infty} \me^{-\pi \Im\tau \cdot n(n - 2|z|/\Im \tau)}\\
+      &= \me^{\pi |z|^2 / \Im \tau} \sum_{n=-\infty}^{\infty} \me^{-\pi \Im\tau \cdot (n - |z|/\Im \tau)^2}\\
+      &\leq C\me^{\pi |z|^2 / \Im \tau}.
+    \end{align*}
+    So we have the order $\leq 2$.
+
+    % We take $2\pi \mi z > 0$ and $|z|\to \infty$, $|z|/\Im \tau = n_0 \in \mathbb Z$, we have
+    % \begin{align*}
+    %   |\Theta(z|\tau)| &= \left|\sum_{n=-\infty}^{\infty} \me^{-\pi n^2 \tau}\me^{2\pi n |z|}\right| \\
+    %   & \geq \me^{-\pi n_0^2 \Im \tau} \me^{2\pi n_0 |z|}
+    %   -\sum_{n\neq n_0} \me^{-\pi n^2 \Im\tau}\me^{2\pi n |z|}\\
+    %   &= \me^{\pi |z|^2 / \Im \tau} \left( 1 - \sum_{n\neq n_0} \me^{-\pi \Im\tau \cdot (n - n_0)^2} \right)\\
+    %   &= \me^{\pi |z|^2 / \Im \tau} \left( 1 - \sum_{n\neq n_0} \me^{-\pi \Im\tau \cdot (n - n_0)^2} \right)
+    % \end{align*}
+    Note that
+    \begin{align*}
+      \Theta(z+m\tau | \tau) &= \sum_{n=-\infty}^{\infty} \me^{\pi \mi n^2 \tau} \me^{2\pi \mi n (z+m\tau)}\\
+      &= \sum_{n=-\infty}^{\infty} \me^{\pi \mi ((n+m)^2-m^2) \tau} \me^{2\pi \mi n z}\\
+      &= \me^{-\pi \mi m^2 \tau - 2\pi \mi m z} \sum_{n=-\infty}^{\infty} \me^{\pi \mi (n+m)^2 \tau} \me^{2\pi \mi (n+m) z}\\
+      &= \me^{-\pi \mi m^2 \tau - 2\pi \mi m z} \Theta(z|\tau),
+    \end{align*}
+    we have
+    \begin{align*}
+      |\Theta(z+m\tau | \tau)| &= \me^{-\pi m^2 \Im \tau} \cdot |\me^{- 2\pi \mi m z}|\cdot |\Theta(z|\tau)|,
+    \end{align*}
+    so if $\Theta(z|\tau) \neq 0$ for some $z$, this gives the order $\geq 2$.
+
+    For bounded $|z|$ we have an uniform convergence, thus
+    \begin{align*}
+      \int_0^{2\pi} \Theta(z|\tau) \dd z &= \int_0^{2\pi} \left(\sum_{n=-\infty}^{\infty} \me^{\pi \mi n^2 \tau} \me^{2\pi \mi n z}\right) \dd z\\
+      &= \sum_{n=-\infty}^{\infty} \me^{\pi \mi n^2 \tau} \int_0^{2\pi}  \me^{2\pi \mi n z}\dd z\\
+      &= 2\pi \neq 0,
+    \end{align*}
+    so $\Theta(z|\tau)$ has a nonzero point.
+  \end{proof}
+  \setcounter{enumi}{5}
+  \item Prove Wallis's product formula
+  \[ \frac{\pi}{2} = \frac{2\cdot 2}{1\cdot 3} \cdot \frac{4\cdot 4}{3\cdot 5}
+  \cdots \frac{2m\cdot 2m}{(2m-1)\cdot(2m+1)}\cdots. \]
+  \begin{proof}
+    Recall that
+    \[ \frac{\sin \pi z}{\pi z} =\prod_{n=1}^\infty \left(1- \frac {z^2}{n^2}\right), \]
+    plug in $z=1/2$, we have
+    \[ \frac 2 \pi = \prod_{n=1}^\infty \left(1 - \frac 1{(2n)^2}\right), \]
+    thus
+    \begin{align*}
+      \frac \pi 2 &= \prod_{n=1}^\infty \left(1 - \frac 1{(2n)^2}\right)^{-1}\\
+      &= \prod_{n=1}^\infty \frac{(2n)^2}{(2n-1)(2n+1)}. \qedhere
+    \end{align*}
+  \end{proof}
+  \item Establish the following properties of infinite products.
+  \begin{enumerate}
+    \item Show that if $\sum |a_n|^2$ converges, then the product $\prod(1 + a_n)$ converges to a
+    non-zero limit if and only if $\sum a_n$ converges.
+    \begin{proof}
+      Since $a_n\to 0$, we can wlog assume $|a_n|\leq 1/2$. For $|z|\leq 1/2$, we have
+      \begin{align*}
+        \left|\ln(1+z) - z \right| &= \left| \sum_{n\geq 2} \frac{(-1)^{n-1} z^n}{n} \right|\\
+        &\leq |z|^2 \sum_{n=0}^{\infty} \frac{2^{-n}}{n+2}\\
+        &= c|z|^2.
+      \end{align*}
+      Thus $\sum \left|\log (1 + a_n) - a_n\right|$ converges, we have the equivalence.
+    \end{proof}
+    \item Find an example of a sequence of complex numbers $\{a_n\}$ such that $\sum a_n$
+    converges but $\prod (1+a_n)$ diverges.
+    \begin{proof}
+      Consider the sequence $a_n = (-1)^n / \sqrt{n}$ starting with large enough $n$.
+      Dirichlet's test tells that $\sum a_n$ converges. And since $\left|\log (1+z) - z + z^2/2\right| \leq c|z|^3$,
+      we have
+      \[ \sum_n \left| \log(1+a_n) - a_n + \frac{a_n^2}{2} \right|
+      \leq \sum_n \frac{c}{n^{3/2}} < \infty, \]
+      we know that the convergence of $\sum \log (1+a_n)$ is equivalent with $\sum a_n - a_n^2/2$,
+      thus equivalent with $\sum a_n^2$. But $\sum a_n^2 = \sum 1/n$ diverges.
+    \end{proof}
+    \item Also find an example such that $\prod (1 + a_n)$ converges and $\sum a_n$ diverges.
+    \begin{proof}
+      We still consider the example above, let $a_n$ be the solution
+      of $a_n - a_n^2/2 = (-1)^n/\sqrt n$ for large enough $n$, we have $c_1/\sqrt{n} \leq |a_n|\leq c_2/\sqrt{n}$.
+      Thus $\sum |a_n|^2$ diverges and $\sum |a_n|^3$ converges. The rest is similar as above.
+    \end{proof}
+  \end{enumerate}
+  \item Prove that for every $z$ the product below converges, and
+  \[ \cos(z/2) \cos(z/4) \cos(z/8)\cdots = \prod_{k=1}^\infty \cos(z/2^k) = \frac{\sin z}{z}. \]
+  \begin{proof}
+    Note that $\cos 2z = 2\sin z \cos z$, we have
+    \[ \sin (z/2^n)\prod_{k=1}^{n} \cos(z/2^k) = \frac{\sin z}{2^n}. \]
+    For $\sin z / z = 0$, we have $z = m \pi$, then clearly some $m/2^k$ is in $\mathbb Z+1/2$, thus $\cos (z/2^m) = 0$.
+    otherwise, we have
+    \[ \prod_{k=1}^n \cos(z/2^k) = \frac{\sin z}{z} \left(\frac{\sin(z/2^n)}{z/2^n}\right)^{-1}, \]
+    thus
+    \[ \prod_{k=1}^\infty \cos(z/2^k) = \frac{\sin z}{z}. \]
+    In conclusion, the equality holds for all $z$.
+  \end{proof}
+  \setcounter{enumi}{9}
+  \item Find the Hadamard products for:
+  \begin{enumerate}
+    \item $\me^z-1$;
+    \begin{answer}
+      Since $\me^{z}-1$ has the order of growth $1$, and the zeroes are $2\pi \mi n$,
+      the Hadamard product has the form
+      \begin{align*}
+        \me^z - 1 &= \me^{P(z)} z \prod_{n\neq 0} E_1(z/2\pi \mi n)\\
+        &= \me^{P(z)} z \prod_{n\neq 0} \left(1 - \frac{z}{2\pi \mi n}\right)\me^{z/2\pi \mi n}\\
+        &= \me^{P(z)} z \prod_{n=1}^\infty \left( 1 - \left(\frac{z}{2\pi \mi n}\right)^2 \right)\\
+        &= \me^{P(z)} z \prod_{n=1}^\infty \left( 1 + \frac{z^2}{4\pi^2 n^2} \right)\\
+        \frac{\me^z-1}{z} &= \me^{P(z)} \prod_{n=1}^\infty \left( 1 + \frac{z^2}{4\pi^2 n^2} \right),
+      \end{align*}
+      since $\mathrm{LHS} = 1 + z/2 + O(z^2)$, we have
+      \[ \me^{P(z)} (1 + O(z^2)) = 1 + \frac z 2 + O(z^2), \]
+      since $\deg P\leq 1$, we have $P(z) = z/2$. In conclusion,
+      \[ \me^z - 1 = z\me^{z/2} \prod_{n=1}^\infty \left(1 + \frac{z^2}{4\pi^2 n^2}\right). \]
+    \end{answer}
+    \item $\cos \pi z$.
+    \begin{answer}
+      Since $\cos \pi z$ has the order of growth $1$, and the zeroes are $n + 1/2$,
+      the Hadamard product has the form
+      \begin{align*}
+        \cos \pi z &= \me^{P(z)} \prod_{n=-\infty}^{\infty} \left(1 - \frac{z}{n+1/2}\right)\me^{z/(n+1/2)}\\
+        &= \me^{P(z)} \prod_{n=1}^{\infty} \left( 1 - \frac{4z^2}{(2n+1)^2} \right),
+      \end{align*}
+      considering the coefficients on the $0$th and $1$st term, we have $P(z) = 0$, thus
+      \[ \cos \pi z = \prod_{n=1}^{\infty} \left( 1 - \frac{4z^2}{(2n+1)^2} \right). \]
+    \end{answer}
+  \end{enumerate}
+  \item Show that if $f$ is an entire function of finite order that omits two values,
+  then $f$ is constant. This result remains true for any entire function and is known as
+  Picard's little theorem.
+  \begin{proof}
+    Suppose $f$ avoids $a$ and $b$. Consider the function $f(z) - a$, since it is entire and avoids $0$,
+    we have some entire function $g$ such that $\me^{g(z)} = f(z) - a$. Since $f(z)$ has a finite order,
+    we have $|f(z)-a| \leq A \me^{B|z|^\rho}$ for some $\rho >0$, thus $\Re g(z) \leq \ln A + B |z|^\rho$,
+    lemma 5.5 tells that $g$ is a polynomial. Since $\me^{g(z)}$ avoids $b-a\neq 0$, 
+    we must have $g$ is constant, thus $f$ is constant.
+  \end{proof}
+  \item Suppose $f$ is entire and never vanishes, and that none of the higher derivatives of $f$ ever
+  vanish. Prove that if $f$ is also of finite order, then $f(z) = \me^{az+b}$ for some constants $a$ and $b$.
+  \begin{proof}
+    As we derived in the last exercise, we have the form $f(z) = \me^{P(z)}$, where $P(z)$ is some
+    polynomial. Since $f'(z) = P'(z)\me^{P(z)}$ never vanishes, we have $P'(z)$ is constant.
+    So we have $P(z) = az+b$.
+  \end{proof}
+  \item Show that the equation $\me^z - z = 0$ has infinitely many solutions in $\bbC$.
+  \begin{proof}
+    Suppose $\me^z - z$ has finite zeroes $a_1,\dots,a_n$, Hadamard's factorization theorem gives
+    the form
+    \[ \me^z - z = \me^{P(z)} Q(z), \]
+    thus
+    \[ \me^{z-P(z)} - z\me^{P(z)} = Q(z), \]
+    take large enough numbers of differentiation, we have $\mathrm{RHS} = 0$, but $\mathrm{LHS} \neq 0$.
+    So this is not possible.
+  \end{proof}
+  \setcounter{enumi}{16}
+  \item Given two countably infinite sequences of complex numbers $\{a_k\}_{k=0}^\infty$ and
+  $\{b_k\}_{k=0}^\infty$ with $\lim_{k\to \infty}|a_k| = \infty$, it is always possible to find an entire
+  function $F$ that satisfies $F(a_k) = b_k$ for all $k$.
+  \begin{enumerate}
+    \item Given $n$ distinct complex numbers $a_1,\dots,a_n$, and another $n$ complex numbers
+    $b_1,\dots,b_n$, construct a polynomial $P$ of degree $\leq n-1$ with
+    \begin{center}
+      $P(a_i) = b_i$ \quad for $i=1,\dots,n$.
+    \end{center}
+    \begin{proof}
+      Consider the polynomial
+      \[ I_i(x) = \prod_{j\neq i} \frac{(x-x_j)}{(x_i-x_j)}, \]
+      we have $I_i(x_i) = 1$ and $I_i(x_j) = 0$ for $j\neq i$, thus
+      \[ P(x) = \sum_{i=1}^n b_i I_i(x) \]
+      satisfies the condition.
+    \end{proof}
+    \item Let $\{a_k\}_{k=0}^\infty$ be a sequence of distinct complex numbers such that $a_0 = 0$
+    and $\lim_{k\to \infty} |a_k| = \infty$, and let $E(z)$ denote a Weierstrass product associated
+    with $\{a_k\}$. Given complex numbers $\{b_k\}_{k=0}^\infty$, show that there exist integers
+    $m_k\geq 1$ such that the series
+    \[ F(z) = \frac{b_0}{E'(z)} \frac{E(z)}{z} + \sum_{k=1}^\infty
+    \frac{b_k}{E'(a_k)} \frac{E(z)}{z-a_k}\left(\frac{z}{a_k}\right)^{m_k} \]
+    defines an entire function that satisfies
+    \begin{center}
+      $F(a_k) = b_k$ \quad for all $k\geq 0$.
+    \end{center}
+    This is known as the Pringsheim interpolation formula.
+    \begin{proof}
+      It's clear that such series satisfies $F(a_k) = b_k$, we only need to let $F$ be entire.
+      Let $n_k$ be smallest nonegative integer such that $2^{n_k} \geq |b_k / E'(a_k)|$, we take
+      $m_k = n_k + k$.
+
+      For the part $|z| \leq R$, there are finite $|a_k| \leq 2R$, for the other part, we have
+      \begin{align*}
+        &\quad \left|\sum_{|a_k| > 2R} \frac{b_k}{E'(a_k)} \frac{E(z)}{z-a_k}\left(\frac{z}{a_k}\right)^{m_k}\right|\\
+        &\leq \sum_{|a_k| > 2R} \left|\frac{b_k}{E'(a_k)}\right| \cdot \frac{|E(z)|}{R} \cdot \frac 1{2^{m_k}}\\
+        &\leq \frac 1{R} \left( \sup_{|z|\leq R} |E(z)| \right) \sum_{|a_k| > 2R} \frac 1{2^k}\\
+        &\leq \frac 1{R} \left( \sup_{|z|\leq R} |E(z)| \right),
+      \end{align*}
+      this gives an uniform convergence. So $F(z)$ is holomorphic on $|z|\leq R$ for any $R$, thus $F(z)$ is entire.
+    \end{proof}
+  \end{enumerate}
+\end{enumerate}
+
+\section{Problems}
+
+\begin{enumerate}
+  \item Prove that if $f$ is holomorphic in the unit disc, bounded and not identically
+  zero, and $z_1,z_2,\dots,z_n,\dots$ are its zeros ($|z_k| < 1$), then
+  \[ \sum_n (1 - |z_n|) < \infty \]
+  \begin{proof}
+    Firstly, we may assume $f(0)\neq 0$, otherwise we can consider $f(z)/z^n$ and the conditions still
+    hold.
+
+    For any $N$, the sum $\sum_{n\leq N} (1 - |z_n|)$ is dominated by some $\sum_{|z_n| < R}(1-|z_n|)$
+    for $R < 1$. We can choose $R\to 1$ that there is no zeroes with $|z|=R$. By Jensen's formula, we have
+    \[ \log |f(0)| = \sum_{|z_n| < R} \log\left(\frac{|z_n|}{R}\right) +
+    \frac 1{2\pi} \int_0^{2\pi} \log |f(R\me^{\mi \theta})| \dd \theta. \]
+    Suppose $|f(z)|\leq B$, we have
+    \[ \sum_{|z_n| < R} \log\left(\frac{R}{|z_n|}\right)
+    = -\log |f(0)| + \frac{1}{2\pi} \int_0^{2\pi} \log |f(R\me^{\mi \theta})|\dd \theta
+    \leq \frac{\log B}{2\pi} - \log |f(0)|. \]
+    Let $R = 1-\epsilon$, we have
+    \begin{align*}
+      &\quad \sum_{|z_n| < 1-2\epsilon} \log \left(\frac{1-\epsilon}{|z_n|}\right)\\
+      &\geq \sum_{|z_n| < 1-2\epsilon} \log \left(\frac{1-(1-|z_n|)/2}{1-(1-|z_n|)}\right)\\
+      &\geq \frac 12\sum_{|z_n| < 1-2\epsilon} (1-|z_n|),
+    \end{align*}
+    we have
+    \[ \sum_{|z_n| < 1-2\epsilon} (1-|z_n|) \leq \frac{\log B}{\pi} - 2\log |f(0)|. \]
+    Take $\epsilon \to 0$, we have
+    \[ \sum_n (1-|z_n|) \leq \frac{\log B}{\pi} - 2\log |f(0)| < \infty. \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{2}
+  \item Show that $\displaystyle \sum_{n=0}^{\infty} \frac{z^n}{n!^\alpha}$ is an entire function of order $1/\alpha$.
+  \begin{proof}
+    Noticed that
+    \[ \frac{|z|^n}{n!} \leq \me^{|z|}, \]
+    we have
+    \[ \frac{|2z|^n}{n!} \leq \me^{|2z|}, \]
+    thus
+    \[ \frac{|z|^n}{n!} \leq \frac{\me^{|2z|}}{2^n}, \]
+    take the $\alpha$-th power, we have
+    \[ \frac{|z|^{\alpha n}}{n!^{\alpha}} \leq \frac{\me^{2\alpha |z|}}{2^{\alpha n}}, \]
+    thus we have
+    \[ \frac{|z|^{n}}{n!^{\alpha}} \leq \frac{\me^{2\alpha |z|^{1/\alpha}}}{2^{\alpha n}}, \]
+    then we have
+    \begin{align*}
+      \left|\sum_{n=0}^{\infty} \frac{z^n}{n!^\alpha}\right|
+      &\leq \sum_{n=0}^{\infty} \frac{|z|^n}{n!^\alpha}\\
+      &\leq \sum_{n=0}^{\infty} \frac{\me^{2\alpha |z|^{1/\alpha}}}{2^{\alpha n}}\\
+      &\leq \frac 1{1-2^{-\alpha}}\me^{2\alpha |z|^{1/\alpha}}.
+    \end{align*}
+    So we have the growth order $\leq 1/\alpha$.
+    Let $z = n^\alpha$, by Stirling's approximation,
+    we have
+    \begin{align*}
+      \frac{z^n}{n!^\alpha} &\sim n^{\alpha n} \left( \sqrt{2\pi n}\left(\frac{n}{\me}\right)^n \right)^{-\alpha}\\
+      &= (2\pi n)^{-\alpha/2} \me^{\alpha n},
+    \end{align*}
+    so the summation has growth order at least $1/\alpha$.
+  \end{proof}
+\end{enumerate}
+
+\end{document}
