@@ -1,0 +1,393 @@
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\DeclareMathOperator{\res}{res}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\setcounter{chapter}{5}
+\chapter{The Gamma and Zeta Functions}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \item Prove that
+  \[ \Gamma(s) = \lim_{n\to \infty} \frac{n^sn!}{s(s+1)\cdots(s+n)} \]
+  whenever $s\neq 0, -1, -2, \dots$.
+  \begin{proof}
+    Recall that we have the Hadamard product
+    \[ \frac 1{\Gamma(s)} = \me^{\gamma s} s\prod_{n=1}^\infty
+    \left(1 + \frac s n\right)\me^{-s/n}, \]
+    and $\gamma$ is defined by
+    \[ \gamma = \lim_{N\to\infty} \sum_{n=1}^N \frac 1 n - \log N, \]
+    we have
+    \[ \me^{\gamma s} = \lim_{N\to \infty} N^{-s}\prod_{n=1}^{N} \me^{s/n}, \]
+    thus we have
+    \begin{align*}
+      \Gamma(s) &= \lim_{N\to \infty} N^{s} \cdot s^{-1}\cdot \prod_{n=1}^N \left(1 + \frac s n\right)^{-1}\\
+      &= \lim_{N\to \infty} N^{s} \cdot \frac{N!}{s(s+1)\cdots(s+N)}. \qedhere
+    \end{align*}
+  \end{proof}
+  \item Prove that
+  \[ \prod_{n=1}^\infty \frac{n(n+a+b)}{(n+a)(n+b)} = \frac{\Gamma(a+1)\Gamma(b+1)}{\Gamma(a+b+1)} \]
+  whenever $a$ and $b$ are positive. Using the product formula for $\sin \pi s$, give another
+  proof that $\Gamma(s)\Gamma(1 - s) = \pi/ \sin \pi s$.
+  \begin{proof}
+    Use the result of last exercise, we have
+    \begin{align*}
+      \frac{\Gamma(a+1)\Gamma(b+1)}{\Gamma(a+b+1)}
+      &= \lim_{n\to \infty} \frac{n^{a+1}n!}{(a+1)\cdots(a+n+1)}
+      \cdot \frac{n^{b+1}n!}{(b+1)\cdots(b+n+1)}\\
+      & \quad \cdot \left(\frac{n^{a+b+1}n!}{(a+b+1)\cdots(a+b+n+1)}\right)^{-1}\\
+      &= \lim_{n\to\infty} \frac{n\cdot n!(a+b+1)\cdots(a+b+n+1)}{(a+1)\cdots(a+n+1)(b+1)\cdots(b+n+1)}\\
+      &= \lim_{n\to\infty} \frac{(n+1)!(a+b+1)\cdots(a+b+n+1)}{(a+1)\cdots(a+n+1)(b+1)\cdots(b+n+1)}\\
+      &= \prod_{n=1}^\infty \frac{n (a+b+n)}{(a+n)(b+n)}.
+    \end{align*}
+    And we have
+    \begin{align*}
+      \Gamma(s)\Gamma(1-s) &= \lim_{n\to \infty} \frac{n^sn!}{s(s+1)\cdots(s+n)}
+      \cdot \frac{n^{1-s}n!}{(1-s)(2-s)\cdots(n+1-s)}\\
+      &= \lim_{n\to \infty} \frac{n!}{s(s+1)\cdots(s+n)}
+      \cdot \frac{(n+1)!}{(1-s)(2-s)\cdots(n+1-s)}\\
+      &= \left(s \prod_{n=1}^\infty \left(1 + \frac s n\right) \left(1 - \frac{s}{n}\right) \right)^{-1}\\
+      &= \left(s \prod_{n=1}^\infty \left(1 - \frac{s^2}{n^2}\right) \right)^{-1}\\
+      &= \left(\frac{\sin \pi s} \pi\right)^{-1}. \qedhere
+    \end{align*}
+  \end{proof}
+  \setcounter{enumi}{3}
+  \item Prove that if we take
+  \begin{center}
+    $\displaystyle f(z) = \frac 1{(1-z)^\alpha}$, \quad for $|z|<1$
+  \end{center}
+  (defined in terms of the principal branch of the logarithm), where $\alpha$ is a fixed
+  complex number, then
+  \[ f(z) = \sum_{n=0}^\infty a_n(\alpha) z^n \]
+  with
+  \begin{center}
+    $\displaystyle a_n(\alpha) \sim \frac 1{\Gamma(\alpha)} n^{\alpha-1}$ \quad as $n\to\infty$.
+  \end{center}
+  \begin{proof}
+    From the Taylor expansion, we have
+    \[ a_n(\alpha) = \frac{\alpha \cdots (\alpha + n - 1)}{n!}, \]
+    then we have
+    \[ \frac{n^{\alpha - 1}}{a_n(\alpha)} = \frac{n^{\alpha}(n-1)!}{\alpha\cdots(\alpha+n-1)} \to \Gamma(\alpha). \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{5}
+  \item Show that
+  \[ 1 + \frac 13 + \frac 15 + \cdots + \frac 1{2n-1} - \frac 12 \log n \to \frac{\gamma}{2} + \log 2, \]
+  where $\gamma$ is Euler's constant.
+  \begin{proof}
+    We have
+    \begin{align*}
+      &\quad \sum_{k=1}^n \frac 1{2k-1} - \frac 12 \log n\\
+      &= \left(\sum_{k=1}^{2n} \frac 1{k}\right) - \frac 12 \left(\sum_{k=1}^n\frac 1{k}\right) - \frac 12 \log n\\
+      &= \left(\sum_{k=1}^{2n} \frac 1{k} - \log (2n)\right) - \frac 12 \left(\sum_{k=1}^n\frac 1{k} - \log n\right)
+      + \log 2\\
+      &\to \gamma - \frac {\gamma}{2} + \log 2\\
+      &= \frac{\gamma}{2} + \log 2. \qedhere
+    \end{align*}
+  \end{proof}
+  \item The \textbf{Beta function} is defined for $\Re(\alpha) > 0$ and $\Re(\beta) > 0$ by
+  \[ B(\alpha, \beta) = \int_0^1 (1-t)^{\alpha-1}t^{\beta - 1} \dd t. \]
+  \begin{enumerate}
+    \item Prove that $\displaystyle B(\alpha, \beta) = \frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$.
+    \begin{proof}
+      Use the identity
+      \[ \Gamma(\alpha) = \int_0^\infty t^{\alpha - 1}\me^{-t}\dd t, \]
+      we have
+      \begin{align*}
+        \Gamma(\alpha) \Gamma(\beta) &= \left(\int_0^\infty t^{\alpha-1}\me^{-t}\dd t \right)
+        \left(\int_0^\infty s^{\beta - 1}\me^{-s}\dd s\right)\\
+        &= \int_0^\infty \int_0^\infty t^{\alpha-1} s^{\beta - 1} \me^{-s-t} \dd s \dd t,
+      \end{align*}
+      introduce $s + t = u$, we have
+      \begin{align*}
+        &= \int_0^\infty \int_0^u (u-s)^{\alpha-1} s^{\beta - 1} \me^{-u} \dd s \dd u\\
+        &= \int_0^\infty \int_0^1 u^{\alpha+\beta-1} (1-s)^{\alpha-1} s^{\beta - 1} \me^{-u} \dd s \dd u\\
+        &= B(\alpha, \beta) \int_0^\infty u^{\alpha+\beta - 1} \me^{-u} \dd u\\
+        &= B(\alpha, \beta) \Gamma(\alpha + \beta),
+      \end{align*}
+      thus $B(\alpha, \beta) = \Gamma(\alpha) \Gamma(\beta) / \Gamma(\alpha + \beta)$.
+    \end{proof}
+    \item Show that $\displaystyle B(\alpha, \beta) = \int_0^\infty \frac{u^{\alpha-1}}{(1+u)^{\alpha+\beta}}\dd u$.
+    \begin{proof}
+      Let $u = 1/t - 1$, we have
+      \begin{align*}
+        B(\alpha, \beta) &= \int_\infty^0 \left(\frac{u}{1+u}\right)^{\alpha-1}
+        \frac 1{(1+u)^{\beta-1}} \dd \left(\frac 1{1+u}\right)\\
+        &= \int_0^\infty \frac{u^{\alpha-1}}{(1+u)^{\alpha+\beta}} \dd u. \qedhere
+      \end{align*}
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{9}
+  \item An integral of the form
+  \[ F(z) = \int_0^\infty f(t) t^{z-1} \dd t \]
+  is called a \textbf{Mellin transform}, and we shall write $\mathcal M(f)(z) = F(z)$. For example,
+  the gamma function is the Mellin transform of the function $\me^{-t}$.
+  \begin{enumerate}
+    \item Prove that
+    \begin{center}
+      $\displaystyle\mathcal M(\cos)(z) = \Gamma(z) \cos \left(\pi \frac z 2\right)$
+      \quad for $0 < \Re(z) < 1$,
+    \end{center}
+    and
+    \begin{center}
+      $\displaystyle\mathcal M(\sin)(z) = \Gamma(z) \sin \left(\pi \frac z 2\right)$
+      \quad for $0 < \Re(z) < 1$.
+    \end{center}
+    \begin{proof}
+      Consider a $1/4$-circle $\gamma$ with radius $\epsilon$ and $R$.
+      Cauchy's theorem gives
+      \begin{align*}
+        0 &= \int_\gamma \me^{-t} t^{z-1} \dd t\\
+        &= \int_\epsilon^R \me^{-t} t^{z-1} \dd t
+        - \int_\epsilon^R \me^{-\mi t} (\mi t)^{z-1} \dd (\mi t)
+        + \int_{C_R} \me^{-t} t^{z-1} \dd t - \int_{C_\epsilon}\me^{-t} t^{z-1} \dd t,
+      \end{align*}
+      here $|\me^{-t}t^{z-1}|\leq \epsilon^{\Re z - 1}$, so the last integration $\to 0$, and
+      \begin{align*}
+        \left| \int_{C_R} \me^{-t} t^{z-1} \dd t \right| &\leq 
+        \int_0^{\pi/2} \me^{-R\cos \theta} R^{\Re z} \dd \theta\\
+        &\leq \int_0^{\pi/2} \me^{-2R \theta / \pi} R^{\Re z} \dd \theta\\
+        &\leq \frac{\pi}{2} R^{\Re z - 1} \to 0.
+      \end{align*}
+      So we have
+      \begin{align*}
+        \Gamma(z) &= \int_0^\infty \me^{-t} t^{z-1} \dd t\\
+        &= \int_0^\infty \me^{-\mi t} (\mi t)^{z-1} \dd (\mi t)\\
+        &= \mi^z \int_0^\infty (\cos t - \mi \sin t) t^{z-1} \dd t\\
+        &= \me^{\pi \mi z / 2} [\mathcal{M}(\cos)(z) - \mi \mathcal M(\sin)(z)],
+      \end{align*}
+      by similar estimate, we have
+      \[ \Gamma(z) = \me^{-\pi \mi z / 2} [\mathcal{M}(\cos)(z) + \mi \mathcal M(\sin)(z)]. \]
+      Then we have
+      \[ \mathcal{M}(\cos)(z) = \frac{\me^{\pi \mi z / 2} + \me^{-\pi \mi z/2}}{2} \Gamma(z)
+      = \Gamma(z) \cos\left(\frac{\pi z}{2} \right), \]
+      and thus
+      \[ \mathcal{M}(\sin)(z) = \Gamma(z) \sin\left(\frac{\pi z}{2} \right). \qedhere \]
+    \end{proof}
+    \item Show that the second of the above identities is valid in the larger strip
+    $-1 < \Re(z) < 1$, and that as a consequence, one has
+    \begin{center}
+      $\displaystyle \int_0^\infty \frac{\sin x}{x} \dd x = \frac{\pi}{2}$
+      \quad and \quad 
+      $\displaystyle \int_0^\infty \frac{\sin x}{x^{3/2}} \dd x = \sqrt{2\pi}$.
+    \end{center}
+    This generalizes the calculation in Exercise 2 of Chapter 2.
+    \begin{proof}
+      For the Mellin transform of $\sin$, since $\sin t \cdot t^{z-1}$ is continuous at $t=0$,
+      we only need to estimate the part $[1, \infty)$. We have
+      \[ \int_1^\infty \sin t \cdot t^{z-1}\dd t = \cos 1 + \int_1^\infty \cos t \cdot t^{z-2}\dd t, \]
+      the rest part converges absolutely, so $\mathcal M(\cos)(z)$ is holomorphic at
+      $-1 < \Re z < 1$. Therefore the equality still holds by analytic continuation. We have
+      \begin{align*}
+        \int_0^\infty \frac{\sin x}{x} \dd x &= \mathcal M(\cos)(0) \\
+        &= \lim_{z\to 0} \Gamma(z)\sin\left(\frac{\pi z}2\right)\\
+        &= \frac 1 2 \lim_{z\to 0} \Gamma(z)\sin \pi z\\
+        &= \frac 12 \cdot \frac {\pi}{\Gamma(1)}\\
+        &= \frac \pi 2.
+      \end{align*}
+      And we have
+      \begin{align*}
+        \int_0^\infty \frac{\sin x}{x^{3/2}}\dd x &= \Gamma\left(-\frac 1 2\right) \sin\left(- \frac{\pi} 4\right)\\
+         &= \sqrt 2\Gamma\left(\frac 1 2\right)\\
+         &= \sqrt{2\pi}. \qedhere
+      \end{align*}
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{11}
+  \item This exercise gives two simple observations about $1/\Gamma$.
+  \begin{enumerate}
+    \item Show that $1/|\Gamma(s)|$ is not $O(\me^{c|s|})$ for any $c > 0$.
+    \begin{proof}
+      Recall $\Gamma(s)\Gamma(1-s) = \pi/\sin \pi s$, when $s = 1/2 - n$, we have
+      \[ \frac 1{\Gamma(s)} = \frac{\Gamma(1-s)}{\pi} = \frac{\Gamma(n + 1/2)}{\pi}, \]
+      thus $1/|\Gamma(s)| \geq (n-1)!$. This is faster than any exponential.
+    \end{proof}
+    \item Show that there is no entire function $F(s)$ with $F(s) = O(\me^{c|s|})$ that has
+    simple zeros at $s = 0,-1,-2,\dots, -n,\dots$, and that vanishes nowhere else.
+    \begin{proof}
+      Suppose such function exists, Hadamard product has the form
+      \[ F(s) = \me^{As + B} s\prod_{n=0}^\infty \left(1 + \frac{s}{n}\right)\me^{-s/n}. \]
+      Then we have
+      \[ \frac 1{\Gamma(s)} = F(s) \me^{-As-B} \cdot \me^{\gamma s}, \]
+      so $1/\Gamma(s)$ is controlled by $O(\me^{(c + |A| + \gamma) s})$, contradiction.
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{14}
+  \item Prove that for $\Re(s) > 1$,
+  \[ \zeta(s) = \frac 1{\Gamma(s)} \int_0^\infty \frac{x^{s-1}}{\me^x - 1} \dd x. \]
+  \begin{proof}
+    We have
+    \begin{align*}
+      &\quad \frac 1{\Gamma(s)} \int_0^\infty \frac{x^{s-1}}{\me^x - 1} \dd x\\
+      &= \frac 1{\Gamma(s)} \int_0^\infty x^{s-1} \sum_{n=1}^\infty \me^{-nx} \dd x\\
+      &\xlongequal{\text{Fubini}} \frac 1{\Gamma(s)} \sum_{n=1}^\infty \int_0^\infty x^{s-1} \me^{-nx} \dd x\\
+      &= \frac 1{\Gamma(s)} \sum_{n=1}^\infty n^{-s} \Gamma(s)\\
+      &= \zeta(s). \qedhere
+    \end{align*}
+  \end{proof}
+\end{enumerate}
+
+\section{Problems}
+
+\begin{enumerate}
+  \item This problem provides further estimates for $\zeta$ and $\zeta'$ near $\Re(s) = 1$.
+  \begin{enumerate}
+    \item Use Proposition 2.5 and its corollary to prove
+    \[ \zeta(s) = \sum_{1\leq n< N} n^{-s} + \frac{N^{1-s}}{s-1}
+    + \sum_{n\geq N} \delta_n(s) \]
+    for every integer $N \geq 2$, whenever $\Re(s) > 0$.
+    \begin{proof}
+      Since
+      \begin{align*}
+        \int_1^N \frac{\dd x}{x^s} &= \left.\frac{1}{1-s} \frac{1}{x^{s-1}} \right|_1^N\\
+        &= -\frac{N^{1-s}}{s-1} + \frac1{s-1},
+      \end{align*}
+      so
+      \begin{align*}
+        \sum_{1\leq n < N} \delta_n(s) &= \sum_{1\leq n < N} \frac 1{n^s} + \frac{N^{1-s}}{s-1}
+        - \frac 1{s-1},\\
+        \zeta(s) &= \frac 1{s-1} + H(s)\\
+        &= \sum_{1\leq n < N} \frac 1{n^s} + \frac{N^{1-s}}{s-1} + \sum_{n\geq N} \delta_n(s). \qedhere
+      \end{align*}
+    \end{proof}
+    \item Show that $|\zeta(1 + \mi t)| = O(\log |t|)$, as $|t| \to\infty$ by using the previous result
+    with $N =$ greatest integer in $|t|$.
+    \begin{proof}
+      We have
+      \begin{align*}
+        |\zeta(1 + \mi t)| &\leq \sum_{1\leq n <N} \frac 1 n
+        + \frac{1}{|t|} + \sum_{n\geq N} \frac{|t|}{n^2}\\
+        &\leq \log N + \frac{1}{|t|} + \frac{|t|}{N-1},
+      \end{align*}
+      let $N$ be the closest integer to $|t|$, we have
+      $|\zeta(1 + \mi t)| \leq \log N + O(1)$.
+    \end{proof}
+    \item The second conclusion of Proposition 2.7 can be similarly refined.
+    \begin{proof}
+      For $s = 1 + \mi t$ where $\sigma \geq 1$, consider
+      \[ \zeta'(s) = \sum_{1\leq n< N} -n^{-s}\log n
+      - N^{1-s}\left(\frac{\log N}{s-1} + \frac 1{(s-1)^2}\right)
+      + \sum_{n\geq N} \delta_n'(s). \]
+      We have
+      \begin{align*}
+        \delta_n'(s) &= \int_n^{n+1} \left[\frac{\log x}{x^s} - \frac{\log n}{n^s}\right] \dd x,\\
+        \left| \delta_n'(s)\right| &\leq \left| \frac{\dd}{\dd x} \frac{\log x}{x^s} \right|\\
+        &= x^{-\sigma - 1} |s \log x - 1|\\
+        &\leq \frac{|s|\log (n+1) + 1}{n^{\sigma + 1}},
+      \end{align*}
+      then we have the estimate
+      \begin{align*}
+        |\zeta'(s)| &\leq \sum_{1\leq n\leq N} \frac{\log n}{n} + \frac{\log N}{|t|}
+        + \frac 1{t^2} + \sum_{n\geq N}\frac{(|t|+1)\log(n+1) + 1}{n^2}\\
+        &= O\left( \log\log N + \frac{\log N}{|t|} + \frac 1{t^2} + \frac{\log N}{N}|t| \right),
+      \end{align*}
+      take $N \sim t^2$, we have the estimate $\zeta'(1 + \mi t) = O(\log\log |t|)$.
+    \end{proof}
+    \item  Show that if $t\neq 0$ and $t$ is fixed, then the partial sums of the series
+    $\sum_{n=1}^\infty 1/n^{1+\mi t}$ are bounded, but the series does not converge.
+    \begin{proof}
+      Since $\sum_{n=1}^\infty \delta_n(s)$ converges, we only need to consider
+      \[ \int_1^n \frac {\dd x}{x^s} = \frac{n^{-\mi t}}{\mi t} - \frac 1{\mi t}, \]
+      and clearly it diverges.
+    \end{proof}
+  \end{enumerate}
+\end{enumerate}
+
+\end{document}
