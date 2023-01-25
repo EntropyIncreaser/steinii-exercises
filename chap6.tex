@@ -376,9 +376,9 @@
       \begin{align*}
         |\zeta'(s)| &\leq \sum_{1\leq n\leq N} \frac{\log n}{n} + \frac{\log N}{|t|}
         + \frac 1{t^2} + \sum_{n\geq N}\frac{(|t|+1)\log(n+1) + 1}{n^2}\\
-        &= O\left( \log\log N + \frac{\log N}{|t|} + \frac 1{t^2} + \frac{\log N}{N}|t| \right),
+        &= O\left( (\log N)^2 + \frac{\log N}{|t|} + \frac 1{t^2} + \frac{\log N}{N}|t| \right),
       \end{align*}
-      take $N \sim t^2$, we have the estimate $\zeta'(1 + \mi t) = O(\log\log |t|)$.
+      take $N \sim t$, we have the estimate $\zeta'(1 + \mi t) = O((\log |t|)^2)$.
     \end{proof}
     \item  Show that if $t\neq 0$ and $t$ is fixed, then the partial sums of the series
     $\sum_{n=1}^\infty 1/n^{1+\mi t}$ are bounded, but the series does not converge.
