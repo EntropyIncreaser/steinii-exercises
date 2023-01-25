@@ -1,0 +1,271 @@
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\DeclareMathOperator{\res}{res}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\setcounter{chapter}{6}
+\chapter{The Zeta Function and Prime Number Theorem}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \item Suppose that $\{a_n\}_{n=1}^\infty$ is a sequence of real numbers such that the partial sums
+  \[ A_n = a_1 + \cdots + a_n \]
+  are bounded. Prove that the Dirichlet series
+  \[ \sum_{n=1}^\infty \frac{a_n}{n^s} \]
+  converges for $\Re(s) > 0$ and defines a holomorphic function in this half-plane.
+  \begin{proof}
+    We first apply the Abel transform,
+    \begin{align*}
+      \sum_{n=1}^N \frac{a_n}{n^s} &= \sum_{n=1}^N \frac{A_n - A_{n-1}}{n^s}\\
+      &= \frac{A_N}{(N+1)^s} + \sum_{n=1}^N A_n \left(\frac 1{n^s} - \frac 1{(n+1)^s}\right),
+    \end{align*}
+    note that $A_n$ is bounded, say, $|A_n|\leq C$, we have $A_N/(N+1)^s \to 0$,
+    and
+    \begin{align*}
+      &\quad \sum_{n=1}^\infty \left| A_n \left( \frac 1{n^s} - \frac 1{(n+1)^s}\right) \right|\\
+      &\leq C\sum_{n=1}^\infty \frac 1{n^{\sigma + 1}} < \infty,
+    \end{align*}
+    the summation converges. This also gives an uniform convergence for each $\Re(s) \geq \sigma$,
+    thus the sum is analytic.
+  \end{proof}
+  \item The following links the multiplication of Dirichlet series with the divisibility
+  properties of their coefficients.
+  \begin{enumerate}
+    \item Show that if $\{a_m\}$ and $\{b_k\}$ are two bounded sequences of complex numbers, then
+    \begin{center}
+      $\displaystyle \left(\sum_{m=1}^\infty \frac{a_m}{m^s}\right)
+      \left(\sum_{k=1}^\infty \frac{b_k}{k^s}\right) = \sum_{n=1}^\infty \frac{c_n}{n^s}$
+      \quad where $c_n = \sum_{mk=n}a_m b_k$.
+    \end{center}
+    The above series converge absolutely when $\Re(s) > 1$.
+    \begin{proof}
+      When the two sequences are bounded, say, $|a_m|, |b_k|\leq C$, we have
+      \[ \sum_{m=1}^\infty \sum_{k=1}^\infty \left| \frac{a_m}{m^s}
+      \frac{b_k}{k^s} \right|
+      \leq \left(\sum_{m=1}^\infty \frac{C}{n^{\sigma}}\right)^2 < \infty, \]
+      so the summation absolutely converges for arbitrary order, when $\sigma>1$ we have
+      \begin{align*}
+        &\quad \sum_{m=1}^\infty \sum_{k=1}^\infty \frac{a_m}{m^s}
+        \frac{b_k}{k^s}\\
+        &= \sum_{n=1}^\infty \sum_{mk=n} \frac{a_m}{m^s}
+        \frac{b_k}{k^s}\\
+        &= \sum_{n=1}^\infty \frac{c_n}{n^s}. \qedhere
+      \end{align*}
+    \end{proof}
+    \item Prove as a consequence that one has
+    \begin{center}
+      $\displaystyle (\zeta(s))^2 = \sum_{n=1}^\infty \frac{d(n)}{n^s}$
+      \quad and \quad $\displaystyle \zeta(s)\zeta(s-a) = \sum_{n=1}^\infty \frac{\sigma_a(n)}{n^s}$
+    \end{center}
+    for $\Re(s) > 1$ and $\Re(s - a) > 1$, respectively. Here $d(n)$ equals the number
+    of divisors of $n$, and $\sigma_a(n)$ is the sum of the $a^{\text{th}}$ powers of divisors of $n$. In particular,
+    one has $\sigma_0(n) = d(n)$.
+    \begin{proof}
+      When $\Re(s) > 1$ and $\Re(s-a)>1$, we have the absolute convergence of
+      \[ \zeta(s)\zeta(s-a) = \sum_{n=1}^\infty \sum_{km=n} \frac{1}{k^sm^{s-a}}
+      = \sum_{n=1}^\infty \frac{\sigma_a(n)}{n^s}. \qedhere \]
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{4}
+  \item Consider the following function
+  \[ \tilde \zeta(s) = 1 - \frac 1{2^s} + \frac 1{3^s} - \cdots = \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n^s}. \]
+  \begin{enumerate}
+    \item Prove that the series defining $\tilde \zeta(s)$ converges for $\Re(s) > 0$ and defines a
+    holomorphic function in that half-plane.
+    \begin{proof}
+      Since the partial sum of $(-1)^{n+1}$ is bounded, exercise 1 applies.
+    \end{proof}
+    \item Show that for $s > 1$ one has $\tilde \zeta(s) = (1 - 2^{1-s})\zeta(s)$.
+    \begin{proof}
+      For $s>1$, exercise 2 applies.
+    \end{proof}
+    \item Conclude, since $\tilde \zeta$ is given as an alternating series, that $\zeta$ has no zeros
+    on the segment $0 < \sigma < 1$. Extend this last assertion to $\sigma = 0$ by using the functional equation.
+    \begin{proof}
+      Since
+      \[ \tilde \zeta(s) = \sum_{n=1}^\infty \left(\frac 1{(2n-1)^s} - \frac 1{(2n)^s}\right), \]
+      we have $\tilde \zeta(s) > 0$ for $0 < s < 1$, then $\zeta(s)\neq 0$.
+      Since $\zeta(s) = \Gamma((1-s)/2)\pi^{s-1/2}\zeta(1-s)/\Gamma(s/2)$, we know $\zeta$ is nonzero at $s=0$.
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{6}
+  \item Show that the function
+  \[ \xi(s) = \pi^{-s/2} \Gamma(s/2) \zeta(s) \]
+  is real when $s$ is real, or when $\Re(s) = 1/2$.
+  \begin{proof}
+    Since $\tilde \zeta(s)$ is real for $s > 0$ and $s\neq 1$, and $\Gamma(s)$ is real for $s>0$,
+    we have $\xi(s)$ is real for $s > 0, s\neq 1$. Since $\xi(s) = \xi(1-s)$, we have
+    $\xi(s)$ is real on the real line.
+
+    Then consider the series expansion at $\xi(s) = \sum_n a_n (s-1/2)^n$ with
+    radius of convergence $1/2$, we must have $a_n\in\bbR$.
+    Since $\xi(s) = \xi(1-s)$, we have $a_n = (-1)^n a_n$, so $a_n = 0$ for $n$ odd, then we must
+    have $\xi(s) \in \bbR$ for $s = 1/2 + \mi t$ where $|t| < 1/2$. We can repeat this argument
+    on the expansion of a larger $t$, then we know that $\xi(s) \in \bbR$ for $\Re s = 1/2$.
+  \end{proof}
+  \item The function $\zeta$ has infinitely many zeros in the critical strip. This can be seen as follows.
+  \begin{enumerate}
+    \item Let
+    \begin{center}
+      $F(s) = \xi(1/2 + s)$, \quad where \quad $\xi(s) = \pi^{-s/2}\Gamma(s/2)\zeta(s)$.
+    \end{center}
+    Show that $F(s)$ is an even function of $s$, and as a result, there exists $G$ so
+    that $G(s^2) = F(s)$.
+    \begin{proof}
+      We already proved this locally in the last problem. Note that $\xi(s)=\xi(1-s)$ gives $F(s) = F(-s)$, we can take
+      $G(s) = F(\sqrt s)$ whenever branch we take.
+    \end{proof}
+    \item Show that the function $(s - 1)\zeta(s)$ is an entire function of growth order $1$,
+    that is
+    \[ |(s-1) \zeta(s)| \leq A_\epsilon \me^{a_\epsilon |s|^{1+\epsilon}}. \]
+    As a consequence $G(s)$ is of growth order $1/2$.
+    \begin{proof}
+      We know that $\zeta(s)$ has the only simple pole at $s=1$, so $(s-1)\zeta(s)$ is entire.
+      When $\Re s \geq 1/2$, we know that $\zeta(s) = O(|t|^{1/2 + \epsilon})$ for $|t|\geq 1$.
+      Since
+      \[ \zeta(s) = \frac{\Gamma\left(\frac{1-s}{2}\right)}{\zeta\left(\frac s 2\right)}
+      \pi^{s-1/2} \zeta(1-s), \]
+      we know $(s-1)\zeta(s)$ has growth order $\leq 1$. Thus $F(s)$ has growth order $\leq 1$.
+      Along the real line we know that $F(s)$ has growth order $1$. Thus $G(s)$ has growth order $1/2$.
+    \end{proof}
+    \item Deduce from the above that $\zeta$ has infinitely many zeros in the critical strip.
+    \begin{proof}
+      If $\zeta$ has only finite zeros on the critical strip, $F$ is entire with finite zeroes.
+      Hadamard's theorem tells that we have the form
+      \[ F(s) = \me^{g(z)} \prod_{k=1}^n (x-a_k), \]
+      where $g$ is a polynomial with $\deg \leq 0$. Then $F$ is a polynomial, contradiction.
+    \end{proof}
+  \end{enumerate}
+  \setcounter{enumi}{10}
+  \item Let
+  \[ \varphi(x) = \sum_{p\leq x} \log p \]
+  where the sum is taken over all primes $\leq x$. Prove that the following are equivalent
+  as $x \to \infty$:
+  \begin{enumerate}[label={(\roman*)}]
+    \item $\varphi(x)\sim x$,
+    \item $\pi(x) \sim x/\log x$,
+    \item $\psi(x)\sim x$,
+    \item $\psi_1(x)\sim x^2/2$.
+  \end{enumerate}
+  \begin{proof}
+    We already proved (iv) $\implies$ (iii) $\implies$ (ii).
+
+    (ii) $\implies$ (i): If $\pi(x) \sim x/\log x$, we have
+    \begin{align*}
+      \limsup_{x\to \infty} \frac{\varphi(x)}{x} & \leq \limsup_{x\to \infty} \frac{\pi(x)\log x}{x} = 1,
+    \end{align*}
+    and since
+    \[ \varphi(x) \geq \sum_{x^\alpha < p \leq x} \log p \geq (\pi(x)-\pi(x^\alpha))\cdot \alpha\log x, \]
+    we have
+    \[ \liminf_{x\to \infty} \frac{\varphi(x)}{x} \geq \alpha \]
+    for all $\alpha < 1$, in conclusion, $\varphi(x)\sim x$.
+
+    (i) $\implies$ (iii): Only need to notice that
+    \[ \psi(x) - \varphi(x) = \sum_{p^m \leq x, m\geq 2}\log p \leq \sqrt x \log x, \]
+    we have $\psi(x)\sim x$.
+
+    (iii) $\implies$ (iv): Stolz--Ces\`aro theorem tells
+    \[ \lim_{x\to \infty} \frac{\psi_1(x)}{x^2/2} = 
+    \lim_{x\to \infty} \frac{\psi(x)}{x+1/2} = 1. \qedhere \]
+  \end{proof}
+\end{enumerate}
+
+\end{document}
