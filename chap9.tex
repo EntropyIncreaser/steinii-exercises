@@ -1,0 +1,209 @@
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\DeclareMathOperator{\res}{res}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\setcounter{chapter}{8}
+\chapter{An Introduction to Elliptic Functions}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \setcounter{enumi}{3}
+  \item By rearranging the series
+  \[ \frac 1{z^2} + \sum_{\omega \in \Lambda^*} \left[\frac1{(z+\omega)^2} - \frac1{\omega^2}\right], \]
+  show directly, without differentiation, that $\wp(z + \omega) = \wp(z)$ whenever $\omega \in \Lambda$.
+  \begin{proof}
+    By the absolute convergence, we can write $\wp(z)$ into the form
+    \[ \wp(z) = \frac 1{z^2} + \lim_{R\to\infty} \sum_{0<|\omega|<R} \left[\frac1{(z+\omega)^2} - \frac1{\omega^2}\right], \]
+    therefore, for $\lambda \in \Lambda$ we have
+    \[ \wp(z) - \wp(z + \lambda) = \lim_{R\to\infty} \sum_{|\omega|<R} \left[\frac1{(z+\omega)^2} - \frac1{(z+\lambda+\omega)^2}\right], \]
+    we have the terms $|\omega| < R-\lambda$ are all cancelled, so the inner summation is $O(1/R^2)\cdot O(R) = O(1/R)$
+    tends to $0$. Thus $\pi(z)= \pi(z+\lambda)$.
+  \end{proof}
+  \setcounter{enumi}{5}
+  \item Prove that $\wp''$ is a quadratic polynomial in $\wp$.
+  \begin{proof}
+    Consider the expansion of $\wp$, we have
+    \begin{align*}
+      \wp(z) &= z^{-2} + 3E_4 z^2 + \cdots,\\
+      \wp''(z) &= 6z^{-4} + 6 E_4 + \cdots,\\
+      \wp(z)^2 &= z^{-4} + 6E_4 + \cdots.
+    \end{align*}
+    Then we have $\wp''(z) - 6\wp(z)^2 + 30E_4$ is entire and zero at $0$. Theorem 1.2 applies, we know that
+    it is identically zero. So we have
+    \[ \wp''(z) = 6\wp(z)^2 - 30E_4. \qedhere \]
+  \end{proof}
+  \setcounter{enumi}{7}
+  \item Let
+  \[ E_4(\tau) = \sum_{(n,m)\neq (0,0)} \frac 1{(n+m\tau)^4} \]
+  be the Eisenstein series of order $4$.
+  \begin{enumerate}
+    \item Show that $E_4(\tau) \to \pi^4/45$ as $\Im(\tau) \to \infty$.
+    \begin{proof}
+      Apply theorem 2.5, we have
+      \[ E_4(\tau) = 2\zeta(4) + \frac{1}{3}\sum_{r=1}^\infty \sigma_{3}(r)\me^{2\pi \mi \tau r}. \]
+      Since the summation is absolute convergent, when $\Im(\tau) \to \infty$, it tends to $0$, so we have
+      \[ E_4(\tau) \to 2\zeta(4) = \frac{\pi^4}{45}. \qedhere \]
+    \end{proof}
+    \item More precisely,
+    \begin{center}
+      $\displaystyle\left|E_4(\tau) - \frac{\pi^4}{45}\right| \leq c \me^{-2\pi t}$ \quad if
+      $\tau = x + \mi t$ and $t\geq 1$.
+    \end{center}
+    \begin{proof}
+      \begin{align*}
+        &\quad \displaystyle\left|E_4(\tau) - \frac{\pi^4}{45}\right|\\
+        &= \frac 13 \left| \sum_{r=1}^\infty \sigma_3(r) \me^{2\pi \mi \tau r} \right|\\
+        &\leq \frac 13 \sum_{r=1}^\infty r^4 \me^{-2\pi r t},
+      \end{align*}
+      which is clearly bounded by some $c\me^{-2\pi t}$ when $t\geq 1$.
+    \end{proof}
+    \item Deduce that
+    \begin{center}
+      $\displaystyle \left| E_4(\tau) - \tau^{-4} \frac{\pi^4}{45}\right| \leq ct^{-4}\me^{-2\pi /t}$
+      \quad if $\tau = \mi t$ and $0 < t \leq 1$.
+    \end{center}
+    \begin{proof}
+      Recall that $E_4(\tau) = \tau^{-4} E_4(-1/\tau)$, we have
+      \[ \left| E_4(\tau) - \tau^{-4} \frac{\pi^4}{45}\right| = |\tau|^{-4} \left| E_4(-1/\tau) - \frac{\pi^4}{45}\right|, \]
+      since $-1/\tau = \mi / t$, we have $1/t \geq 1$, thus
+      \[ \leq ct^{-4} \me^{-2\pi/t}. \qedhere \]
+    \end{proof}
+  \end{enumerate}
+\end{enumerate}
+
+\section{Problems}
+
+\begin{enumerate}
+  \setcounter{enumi}{1}
+  \item Show that
+  \[ \wp(z) = c + \pi^2 \sum_{m=-\infty}^{\infty} \frac 1{\sin^2((z + m\tau) \pi)} \]
+  where $c$ is an appropriate constant. In fact, by part (b) of the previous problem $c = -F(\tau)$.
+  \begin{proof}
+    Let $f(z) = \pi^2 \sum_{m=-\infty}^{\infty} \frac 1{\sin^2((z + m\tau) \pi)}$.
+
+    Since $1/\sin z$ has an exponential decay when $\Im z\to \infty$, we know the summation has
+    absolute convergence on a compact set.
+
+    From the periodicity of $\sin$, we know that $f(z)$ has periodicity $1$. From the summation,
+    we know that $f(z)$ has periodicity $\tau$. Note that $\wp(z) - f(z)$ is entire,
+    it is a constant.
+  \end{proof}
+  \item Suppose $\Omega$ is a simply connected domain that excludes the three roots of the
+  polynomial $4z^3 - g_2 z - g_3$. For $\omega_0 \in \Omega$ and $\omega_0$ fixed, define the function
+  $I$ on $\Omega$ by
+  \[ I(\omega) = \int_{\omega_0}^\omega \frac{\dd z}{\sqrt{4z^3 - g_2 z - g_3}} \quad \omega \in \Omega. \]
+  Then the function $I$ has an inverse given by $\wp(z + \alpha)$ for some constant $\alpha$; that is,
+  \[ I(\wp(z+\alpha)) = z \]
+  for appropriate $\alpha$.
+  \begin{proof}
+    Consider the derivative of $I(\wp(z))$, we have
+    \begin{align*}
+      (I(\wp(z)))' &= I'(\wp(z)) \wp'(z)\\
+      &= \frac{\wp'}{\sqrt{4 \wp^3 - g_2\wp - g_3}},
+    \end{align*}
+    since $(\wp')^2 = 4\wp^3 - g_2\wp - g_3$, we have $(I(\wp(z)))' = \pm 1$.
+    If $\sqrt{\cdot}$ takes the correct branch, we will have $I(\wp(z))' = 1$, thus
+    $I(\wp(z))' = z - \alpha$ for some $\alpha$.
+  \end{proof}
+\end{enumerate}
+
+\end{document}
