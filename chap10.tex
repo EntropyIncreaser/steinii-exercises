@@ -1,0 +1,172 @@
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Complex Analysis}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate]{label = {\bfseries \arabic*.}}
+\setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbR}{\mathbb{R}}
+
+\newcommand{\norm}[1]{\|#1\|}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\DeclareMathOperator{\res}{res}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\setcounter{chapter}{9}
+\chapter{Applications of Theta Functions}
+
+\section{Exercises}
+
+\begin{enumerate}
+  \item Prove that
+  \[ \frac{(\Theta'(z|\tau))^2 - \Theta(z|\tau)\Theta''(z|\tau)}{\Theta(z|\tau)^2}
+   = \wp_\tau(z - 1/2 - \tau / 2) + c_\tau, \]
+  where $c_\tau$ can be expressed in terms of the first three derivatives of $\Theta(z|\tau)$, with respect
+  to $z$, at $z = 1/2 + \tau/2$. Compare this formula with the result in Exercise 5 in the previous chapter.
+  \begin{proof}
+    We already know that LHS is $-(\log \Theta(z|\tau))''$, which has period $1$ and $\tau$.
+    We know that the zeroes $\Theta(z|\tau)$ are exactly $(n+1/2) + (m+1/2)\tau$ with order 1,
+    so the poles of $(\log \Theta(z|\tau))'$ are exactly at $(n+1/2) + (m+1/2)\tau$ with residue $1$.
+    Thus we have
+    \[ (\log \Theta(z|\tau))'' = - \frac 1{(z-1/2-\tau/2)^2} + c + \cdots \]
+    near $z = 1/2 + \tau/2$, then $(\log \Theta(z|\tau))'' + \wp_\tau(z-1/2-\tau/2)$
+    is holomorphic, thus is constant.
+
+    Since $\wp_\tau(z) = z^{-2} + O(z^2)$, we have
+    \[ -c_\tau = \lim_{z\to 1/2 + \tau/2} \left[ (\log \Theta(z|\tau))'' + \frac 1{(z+1/2+\tau/2)^2} \right]. \]
+    Let $z_0 = 1/2 + \tau/2$, we have
+    \[ f(z) = f'(z_0)(z-z_0) + \frac{f''(z_0)}2(z-z_0)^2 + \frac{f'''(z_0)}6(z-z_0)^2 + \cdots, \]
+    thus
+    \[ (\log f(z))' = \frac 1{z - z_0} + \frac{f''(z_0)}{2f'(z_0)} + \left(\frac{f'''(z_0)}{3f'(z_0)}
+    - \frac{f''(z_0)^2}{4f'(z_0)^2}\right)(z-z_0) + \cdots, \]
+    so
+    \[ (\log f(z))'' = -\frac 1{(z-z_0)^2} + \left(\frac{f'''(z_0)}{3f'(z_0)}
+    - \frac{f''(z_0)^2}{4f'(z_0)^2}\right)+\cdots, \]
+    then we have
+    \[ (\log \Theta(z|\tau))'' + \wp_\tau(z - z_0) = \frac{\Theta'''(z_0|\tau)}{3\Theta'(z_0|\tau)}
+    - \frac{\Theta''(z_0|\tau)^2}{4\Theta'(z_0|\tau)^2}. \qedhere  \]
+  \end{proof}
+  \setcounter{enumi}{4}
+  \item Let
+  \[ F(x) = \sum_{n=0}^\infty p(n)x^n = \prod_{n=1}^\infty \frac 1{1-x^n} \]
+  be the generating function for the partitions. Show that
+  \begin{center}
+    $\displaystyle \log F(x) \sim \frac{\pi^2}{6(1-x)}$ \quad
+    as $x\to 1$, with $0<x<1$.
+  \end{center}
+  \begin{proof}
+    When $|x|<1$, we have the absolute convergence
+    \begin{align*}
+      \log F(x) &= \sum_{n=1}^\infty \log \frac 1{1-x^n}\\
+      &= \sum_{n=1}^\infty \sum_{m=1}^\infty \frac{x^{nm}}{m}\\
+      &= \sum_{m=1}^\infty \frac 1{m} \frac{x^m}{1-x^m},
+    \end{align*}
+    then we have
+    \begin{align*}
+      (1-x)\log F(x) &= \sum_{m=1}^\infty \frac 1{m} \frac{x^m (1-x)}{1-x^m},
+    \end{align*}
+    note that on $(0, 1)$,
+    \begin{align*}
+      \left(\frac{x^m(1-x)}{1-x^m}\right)' &= \frac{x^{m-1}(m-(m+1)x+x^m)}{(1-x^m)^2}\\
+      &= \frac{x^{m-1}(1-x)}{(1-x^m)^2}\left(m - \frac{x-x^m}{1-x}\right)\\
+      &= \frac{x^{m-1}(1-x)}{(1-x^m)^2}\left((1 - x) + (1-x^2) + \cdots + (1-x^m)\right) \geq 0,
+    \end{align*}
+    so the function is increasing. We have
+    \begin{align*}
+      \lim_{x\to 1} (1-x)\log F(x) &= \sum_{m=1}^\infty \frac 1 m \lim_{x\to 1} \frac{x^m(1-x)}{1-x^m}\\
+      &= \sum_{m=1}^\infty \frac 1{m^2}\\
+      &= \zeta(2) = \frac{\pi^2} 6 .
+    \end{align*}
+    Thus $\log F(x) \sim \pi^2 / 6(1-x)$ at $x\to 1$.
+  \end{proof}
+\end{enumerate}
+
+\end{document}
